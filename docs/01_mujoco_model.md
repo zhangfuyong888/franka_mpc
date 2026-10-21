@@ -8,8 +8,8 @@
 
 Robot 按 joint1..7 查 qpos 地址、DOF 地址和 motor transmission，并检查 nq=nv=nu=7、坐标对齐。不能在一般 MuJoCo 模型上假设 joint ID 等于 DOF 地址。home 为 `[0,-0.6,0,-2,0,1.5,0.785398]`；只有初始化 reset。独立 MjData 用于 IK、预测 FK 与名义前馈。
 
-时序为 `mj_step1 → 读取派生状态/控制 → motor ctrl → 外力 → mj_step2`。模型选择 implicitfast，禁用 RK4 拆分步假设；已检查 MuJoCo3.3.7 engine_forward.c：mj_step2 对 implicit/implicitfast 调用 mj_implicit，其他设置走 Euler。该版本文档页仍有旧 Euler 描述，以固定版本源码为准；运行仍待依赖安装验证。没有旧 position servo 或 body_gravcomp 隐含补偿。
+时序为 `mj_step1 → 读取派生状态/控制 → motor ctrl → 外力 → mj_step2`。模型选择 implicitfast，禁用 RK4 拆分步假设；已检查 MuJoCo3.3.7 engine_forward.c：mj_step2 对 implicit/implicitfast 调用 mj_implicit，其他设置走 Euler。该版本文档页仍有旧 Euler 描述，以固定版本源码为准；实际MuJoCo3.3.7运行已通过保持和闭环测试。没有旧 position servo 或 body_gravcomp 隐含补偿。
 
-运行 `python -m pytest -q tests/test_integration.py::test_torque_model_and_home_hold` 会检查零输入 qfrc_actuator=0、已知输入直接力矩映射，再做真实保持。目前缺 MuJoCo 而跳过；已通过的是 XML 静态检查、67 个网格 SHA 和固定手指位姿检查，不能据此宣称物理模型编译通过。
+运行 `python -m pytest -q tests/test_integration.py::test_torque_model_and_home_hold` 会检查零输入 qfrc_actuator=0、已知输入直接力矩映射，再做真实保持。目前上述测试已实际通过，模型编译、直接力矩映射和两秒保持已验证；静态检查同时保留67个网格SHA与固定手指位姿验证。
 
 错误定位：重力补偿后漂移，查顺序、符号、遗漏惯量及旧 servo。练习：解释修改前后最后轴 ctrlrange 的 rad/Nm 含义差异。

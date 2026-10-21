@@ -1,73 +1,48 @@
-# 实际验证记录与未完成验收
+# 当前实际验证记录
 
-日期：2026-10-21。本项目按任务说明创建，但**尚未达到第一版完整完成标准**。主要阻塞是当前执行环境禁止终端网络，且本机未安装 MuJoCo、mink、OSQP Python。没有把未运行的物理指标填写成结果。
+日期：2026-10-21。本次处理用户运行中的 SparseConversionWarning，发现并修复真实闭环参考停滞。初始缺包记录保留在 [最初验证记录](validation_initial.md)，已不代表当前依赖状态。
 
-## 环境与安装
+## 修复原因和实现
 
-初始工作区只有 CODEX_TASK_MPC_MIT_V2.md，没有现有项目、references 或适用 AGENTS.md。系统 Python3.10.12 的 venv 因缺 ensurepip 失败；随后使用已有 `/home/zfy/miniconda3/envs/tv/bin/python` 3.10.20 在项目内创建 `.venv`，为离线验证读取既有 tv 的 scientific Python 包。不修改全局 Python、Git身份、系统或任何参考仓库。
+- mink0.0.13 的 build_ik 构造密集 P/G，qpsolvers 的 OSQP 后端会自动转换并警告。现在仍用 mink 的公开任务、约束和 build_ik，项目内显式转 CSC 后直接调用已安装的 OSQP1.0.4，使用 solve(raise_error=False)。没有过滤或屏蔽警告，没有改第三方代码。
+- 用户原运行完整10s、退出0，但末端误差0.171385m、489次参考回退。强制在20ms段内补偿参考与实测的微小位置偏差，将加速度放大后反复制动。现在采用任务允许的等价C1方案：从上一接受参考边界连续积分MPC第一加速度；MPC初值仍是真实测量，完整区间边界/制动/日志保留。公式见 [连续参考](03_online_trajectory.md)。
+- OSQP活跃速度界上约3.44e-15的舍入误差被旧版误判为超速。初值判断仅容许1e-10舍入量，x0不裁剪，真实超界仍拒绝。
+- demo结束后打印最后目标状态、位置误差、QP失败与饱和数；运行正常退出与目标达到是两个不同事实，未通过到达判据时明确提示。
 
-执行安装：
-
-```bash
-.venv/bin/python -m pip install --disable-pip-version-check --no-cache-dir --retries 1 --timeout 5 mujoco osqp mink
-```
-
-实际失败：`ProxyError ... Failed to establish a new connection: [Errno 1] 不允许的操作`。去掉代理的 curl 也无法解析 pypi.org。`git ls-remote` 失败。见 [完整安装错误](install_attempt.log)。浏览/GitHub连接器可读取资料与仓库文件，因此模型资产取得并核对原 Git SHA，但该渠道不能完成当前 Python 依赖安装。
-
-成功执行：
+## 已运行命令和结果
 
 ```bash
-.venv/bin/python -m pip install --no-deps --no-build-isolation -e .
-.venv/bin/python -m pip wheel --no-deps --no-build-isolation --wheel-dir dist .
-```
-
-项目本身安装、wheel构建成功，67个网格、XML、默认配置和许可进入wheel。另将wheel装入 `/tmp/panda-wheel-check`，从 `/tmp` 读取包资源和配置，验证与当前工作目录、旁边 references 无关。**这只证明打包与资源加载，不证明MuJoCo已编译模型。**
-
-实际科学包版本见 [环境记录](environment_observed.txt)：NumPy1.26.4/SciPy1.15.2/PyYAML6.0.3/Matplotlib3.7.5/pytest9.1.1/CasADi3.6.7；原生OSQP动态库0.6.3。生产候选主要依赖已精确指定，完整传递锁未生成且干净安装未验证，不能称可复现安装验收完成。
-
-## 测试与原生求解实验
-
-```bash
-.venv/bin/python -m pytest -q -ra
-.venv/bin/python scripts/verify_native_osqp.py
-.venv/bin/python -m compileall -q src scripts examples tests
-.venv/bin/python scripts/check_docs.py
-```
-
-单元结果：**14 passed，7 skipped**，见 [测试输出](test_results.txt)。通过内容包括资产校验、力矩合成/限幅/过期、事件合并与历史、到达驻留逻辑、解析参考值/导数/内部极值/回退/停止、原QP代价等价性、故障注入拒解、失败计数及离线日志绘图。分析流水线测试的数据是明确标记的临时合成单元输入，不作机器人性能证据。
-
-跳过的七项是真实引擎/求解器集成：motor映射与保持、mink独立状态、Python OSQP收敛/不可行、真实单目标到达、途中切换与回放、外力对照与恢复、不可达目标制动。未使用mock替代它们宣称通过。
-
-另运行了真实 OSQP C0.6.3，经已有CasADi插件，使用生产 `MPCProblem` 构造的矩阵做四组理想双积分实验，每组400次实际QP。它不是生产 Python OSQP 接口验收，也不是机器人实验。七轴默认维度539、最终理想关节误差3.45e-9 rad、速度峰0.7 rad/s、加速度峰2rad/s²，最大约束违反3.43e-16；七轴求解包装时间P50≈1.01ms/P95≈12.29ms/最大≈23.11ms。原始数组、曲线、其他参数结果见 [实验](08_experiments.md) 和 [原始摘要](evidence/native_osqp/summary.json)。
-
-## 演示和分析入口
-
-已实际执行：
-
-```bash
-.venv/bin/python -m panda_mpc.demo --scenario hold --headless --duration 10 --seed 42 --output outputs/blocked-hold
-.venv/bin/python -m panda_mpc.analyze --run-dir outputs/blocked-hold
-```
-
-演示在导入 MuJoCo 时 `ModuleNotFoundError: No module named 'mujoco'`，退出1，保存metadata、解析配置、execution错误、空事件/ticks。分析正常读取失败日志并输出 `execution_completed:false`、`acceptance_passed:false`，不生成虚构物理曲线。其错误副本保存于 [blocked execution](evidence/blocked_execution.json)。
-
-其他场景、四个真实教学脚本、GUI演示和文档中的全套安装命令均未成功运行；同一个核心依赖阻塞已明确定位，没有将它们标为通过。GUI显示/关闭/资源释放也未实际验证。
-
-## 当前不能给出的指标
-
-- 真实末端到达误差、保持误差、稳态偏差、外力恢复时间：未测。
-- 真实速度/力矩峰值、饱和、QP失败、桥接/降级次数：未测，不填写0。
-- 生产Python后端及整个机器人tick的P50/P95/最大/超预算、仿真/墙钟比：未测。
-- 参数不匹配、负载偏差、多个固定seed的真实回归：未做。
-
-## 补齐环境后的验收
-
-```bash
-PYTHON=python3.11 bash scripts/install.sh
+.venv/bin/python -m pytest -q -W error
 .venv/bin/python scripts/acceptance.py
-.venv/bin/python -m pytest -q -ra
+.venv/bin/python -m panda_mpc.demo --scenario single_target --headless --duration 10 --seed 42 --output outputs/fix-reference-probe
 ```
 
-install脚本依赖可用Python/ensurepip和包下载，成功后才生成完整 requirements.lock。acceptance脚本运行七场景和外力对照，既查退出码，也检查固定目标 reached/原阈值，以及显著外力偏移和恢复。任何失败都保留日志，不能通过调整验收阈值、缩小任务或重置状态规避。
+**22 passed，0 skipped，warnings作为错误也全部通过。** 其中包含真实MuJoCo、mink、OSQP的保持、IK、固定目标、运动途中替换和回放、真实外力对照/恢复、无效目标。另有新增连续积分回归与稀疏转换警告回归。见 [测试输出](test_results.txt)。
 
-先确认模型/API兼容与home稳定，再单目标到达，随后抢占/随机/快速切换/外力对照/GUI。重跑后应以真实新指标更新本记录和教学图，不保留当前“未测”作为永久结论。
+验收脚本实际运行了hold10s、single_target10s、switch12s、random30s、rapid_switch10s、invalid_goal8s、disturbance12s和同配置无扰动control12s，然后执行真实对照分析。所有命令及预期退出码检查通过，[原始命令结果](evidence/closed_loop/commands.json)。完整日志位于 outputs/acceptance-20261021-110412/；小量可长期保留的摘要与图位于 docs/evidence/closed_loop/。
+
+| 场景 | 末端最终误差 m | 饱和步 | QP失败 | 参考回退 | 解释 |
+|---|---:|---:|---:|---:|---|
+| hold |6.42e-15|0|0|0|home保持通过|
+| single_target |0.000859|0|0|0|1.636s达到，目标于0.2s激活，之后保持|
+| switch |0.001259|0|0|0|A/B/C途中替换|
+| random |0.010109|0|0|0|末个目标仍可能在移动，按可用时间分类|
+| rapid_switch |0.149497|0|0|0|频繁抢占，不要求每个目标到达|
+| invalid_goal |2.842538|0|0|0|这是对不可达目标的误差；明确rejected后制动，退出2|
+| disturbance |0.000859|0|0|0|外力撤去后恢复|
+
+![单目标真实误差](evidence/closed_loop/single_target_error.png)
+
+扰动为关节2 +6Nm，从4.0s开始持续0.25s；同配置无扰动对照注入前差异0，最大实际末端偏移0.006780m，最大目标误差0.007100m。撤去后0.796s重新满足误差<0.01m、速度<0.02m/s并连续0.2s；饱和/QP失败/降级均0。不能把恢复全部归因于MPC，MIT内反馈也起作用。
+
+![真实扰动对照](evidence/closed_loop/disturbance_comparison.png)
+
+单目标整个MPC tick耗时P50=3.415ms、P95=3.506ms、最大11.362ms、20ms超预算0；仿真/控制墙钟比约2.764（统计不包含退出后的绘图时间）。invalid_goal的IK拒绝tick约122ms，超20ms预算1次；本版本不声称所有目标激活都满足墙钟实时。
+
+环境的实际依赖、代码/模型摘要和计时约定见 [metadata](evidence/closed_loop/metadata.json)，各场景完整数值见相邻 *_summary.json。
+
+## GUI验证状态与剩余限制
+
+已尝试原GUI命令。当前工具执行环境无法连接DISPLAY=:1，GLFW返回 X11: Failed to open display :1，因而没有完成这里的GUI验收。用户此前那次GUI运行的日志证明仿真完整跑了10s；按 --duration 10 结束后窗口关闭属于预期行为。用户桌面可继续使用原命令，代码更新无需重新安装editable包。
+
+仍未验证干净环境的完整依赖锁、多个seed的系统回归、严重物理数值异常触发、未知负载实验。位置阈值/目标距离/外力幅值没有为通过测试而修改；无硬件控制、参数自适应、全局避障或形式化安全保证。

@@ -46,7 +46,11 @@ def test_mink_independent_state_and_endpoint():
     before = sim.data.qpos.copy()
     ik = InverseKinematics(sim.robot, load_config())
     target = np.array([.48, .14, .5])
-    r = ik.solve(target, before)
+    import warnings
+    from qpsolvers.warnings import SparseConversionWarning
+    with warnings.catch_warnings():
+        warnings.simplefilter('error', SparseConversionWarning)
+        r = ik.solve(target, before)
     assert r.success, r
     assert np.linalg.norm(sim.robot.fk(r.q_goal)-target) < .002
     np.testing.assert_array_equal(sim.data.qpos, before)
@@ -69,6 +73,7 @@ def test_real_osqp_switch_and_infeasibility():
     assert np.max(np.abs(q+.3)) < .01
     assert np.max(np.abs(v)) < .02
     assert not mpc.solve(np.full(7, 2.), v, target, previous).success
+    assert not mpc.solve(np.zeros(7), np.full(7, .700001), target, previous).success
     assert not mpc.solve(np.full(7, .999), np.full(7, .7), target, previous).success
 
 
@@ -81,6 +86,7 @@ def test_fixed_target_closed_loop_and_headless(tmp_path):
     assert summary['final_error_m'] < .01
     assert summary['saturated_steps'] == 0
     assert summary['qp_failures'] == 0
+    assert summary['reference_backtracks'] == 0
     assert summary['max_q_reference_jump'] < 1e-10
     assert summary['max_v_reference_jump'] < 1e-10
     assert 'mujoco.viewer' not in sys.modules

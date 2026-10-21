@@ -95,7 +95,7 @@ def run(config, output, headless=True, events_file=None):
                     segment = ref.update(state.t, boundary_q, np.zeros(7), goal_id, braking=True)
                 else:
                     result_status = result.status
-                    segment = ref.update(state.t, result.q_pred[1], result.dq_pred[1], goal_id)
+                    segment = ref.advance(state.t, result.a_pred[0], goal_id)
                 if segment.alpha < 1:
                     monitor.emit(state.t, 'reference_backtrack', segment.reason, goal_id, alpha=segment.alpha)
                 new_q, new_v, _ = segment.sample(state.t)

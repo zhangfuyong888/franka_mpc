@@ -15,7 +15,7 @@ $$c_x=-2\bar Q[x_g;\ldots;x_g],\quad c_a=-2D^T\bar Sb.$$
 
 E 第一 nx 行是 x0=测量，之后各动力学行为 [-Ad,I,-Bd]，界为零。F 是 `I_nz[nx:,:]`，选择 x1..xN 和全部 a，跳过 x0。界按 [q_lower,-vmax]/[q_upper,vmax] 重复 N 次，再接 ±amax。G=vstack(E,F)，均使用 CSC。
 
-LinearMPC 一次 setup、之后每 tick update(q,l,u)。P/G 固定，OSQP 自动 warm start，没有复杂移位。使用上三角 P。代码按 OSQP1.0.4 的 warm_starting/polishing/solve(raise_error=False) 和 info.prim_res/dual_res 编写，但该 Python 版本没有安装，API 运行兼容性尚未验收。
+LinearMPC 一次 setup、之后每 tick update(q,l,u)。P/G 固定，OSQP 自动 warm start，没有复杂移位。使用上三角 P。代码按 OSQP1.0.4 的 warm_starting/polishing/solve(raise_error=False) 和 info.prim_res/dual_res 编写，目前该版本已安装，真实理想模型和MuJoCo闭环集成测试均已通过。
 
 接受条件：status_val 为 1 或 2、数组有限、最大约束违反≤0.001、原/对偶残差均≤0.001。solved inaccurate 不自动接受。elapsed 包含 Python update/solve 包装，另记录迭代与余量，不冒充整 tick 耗时。
 

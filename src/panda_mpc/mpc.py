@@ -79,8 +79,11 @@ class LinearMPC:
         if any(v.shape != (p.n,) or not np.isfinite(v).all() for v in values):
             return MPCResult(False, 'invalid_input', elapsed=perf_counter()-start)
         q, dq, goal, previous_a = values
-        if (np.any(q < p.lower) or np.any(q > p.upper)
-                or np.any(np.abs(dq) > p.velocity)):
+        # Roundoff at an active OSQP bound is not a physical limit violation.
+        # Keep the original measurement in x0; never clip it to obtain feasibility.
+        bound_roundoff = 1e-10
+        if (np.any(q < p.lower-bound_roundoff) or np.any(q > p.upper+bound_roundoff)
+                or np.any(np.abs(dq) > p.velocity+bound_roundoff)):
             return MPCResult(False, 'measured_state_outside_operating_bounds', elapsed=perf_counter()-start)
         linear, l, u = p.vectors(q, dq, goal, previous_a)
         self.solver.update(q=linear, l=l, u=u)

@@ -8,7 +8,7 @@ flowchart LR
   I --> Q[固定 q_goal]
   S[实测 q / dq] --> M[50 Hz 加速度 MPC]
   Q --> M
-  M --> R[C1 Hermite 高频参考]
+  M --> R[C1 连续积分参考]
   R --> C[500 Hz MIT 命令]
   C --> A[合成并限幅力矩]
   A --> P[MuJoCo 非线性物理]
@@ -20,4 +20,4 @@ IK 输入 world 位置和实测 seed，输出关节终点；MPC 输入实际状�
 
 `robot.py` 集中索引和 FK。`sim.py` 只有初始化会 reset。`disturbances.py` 独占实验外力，不向 IK/MPC/前馈传递计划。`monitor.py` 记录制动、过期和停止。`telemetry.py/analyze.py` 记录与评价。
 
-代码已实现，真实物理验收未完成，见 [validation](validation.md)。最小实验：`python -m panda_mpc.demo --scenario switch --headless --duration 12`（依赖安装后）。查看 events 的 scheduled/activated/first_command、ticks 的 goal_id、NPZ 的真实速度。错误是把新目标构型直接写入物理状态。练习：画出 0.013 s 事件在 0.02 s tick 消费时，各模块保留和撤销的数据。
+真实headless物理场景与全部集成测试已通过，GUI自动验证受X11限制，见 [validation](validation.md)。最小实验：`python -m panda_mpc.demo --scenario switch --headless --duration 12`（依赖安装后）。查看 events 的 scheduled/activated/first_command、ticks 的 goal_id、NPZ 的真实速度。错误是把新目标构型直接写入物理状态。练习：画出 0.013 s 事件在 0.02 s tick 消费时，各模块保留和撤销的数据。

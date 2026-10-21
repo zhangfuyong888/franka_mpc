@@ -1,12 +1,12 @@
 # Panda 在线目标跟踪：IK + 关节空间线性 MPC + MIT 关节阻抗仿真
 
-**当前状态：实现与离线验证版本，尚未达到任务说明的第一版完整验收标准。** 当前环境禁止终端网络访问，缺少 `mujoco`、`mink`、`osqp` Python 包，因此真实物理保持、到达、扰动恢复及 GUI 均未验证。不要将下方待执行命令或原生 OSQP 理想模型结果当作机器人实验结果。具体记录见 [validation](docs/validation.md)。
+**当前状态：真实 headless 闭环已验证。** 当前环境已安装 MuJoCo3.3.7、mink0.0.13、OSQP1.0.4。`pytest -q -W error` 的22项测试全部通过，七种场景和扰动对照已运行。单目标最终误差约0.86mm，默认运行没有QP失败、饱和或参考回退。GUI自动验证仍受工具环境无法连接X11限制；完整证据见 [validation](docs/validation.md)。
 
-项目已有完整控制代码、随包模型/67 个网格及许可、七个场景、连续参考、MIT 力矩适配器、日志和分析入口。14 个单元测试通过，7 个真实集成测试明确跳过。生产控制器使用 Python OSQP；独立验证工具额外使用本机 CasADi 中的真实 OSQP 0.6.3，验证同一份稀疏 QP 的数学与理想双积分运动，不属于生产后端。
+控制路线为IK → 关节空间加速度MPC → 从上一参考边界连续积分第一优化输入 → MIT执行适配器。保留解析整段检查与制动，不重置实际状态。模型、67个网格和许可随包安装。警告来源及连续参考修复见 [连续参考](docs/03_online_trajectory.md)。
 
 ## 安装
 
-优先 Python 3.11；本机只有可用的 3.10，离线验证采用 3.10.20。请在项目目录执行：
+优先 Python 3.11；本机只有可用的 3.10，本次实际运行采用 3.10.20。请在项目目录执行：
 
 ```bash
 python3.11 -m venv .venv
@@ -16,7 +16,7 @@ python -m pip freeze --all > requirements.lock
 python -m pip check
 ```
 
-`pyproject.toml` 固定了主要依赖版本；**完整传递依赖锁尚未生成和验证**。不要把 `docs/environment_observed.txt` 当作安装锁，它记录本机借用环境的已安装包。恢复下载后，上述安装和真实集成测试是下一步必做工作。
+`pyproject.toml` 固定了主要依赖版本；**完整传递依赖锁尚未生成和验证**。不要把 `docs/environment_observed.txt` 当作安装锁，它记录本机借用环境的已安装包。本机已完成真实集成测试；干净环境安装与传递锁仍需独立验证。
 
 本机为继续离线工作，已通过 `/home/zfy/miniconda3/envs/tv/bin/python` 创建允许读取该环境包的项目 `.venv`，只在项目内写入：
 
@@ -28,7 +28,7 @@ python -m pip check
 
 第一条只安装项目本身，不能补齐仿真依赖。模型已包含在包中；启动不下载模型，不依赖邻近参考目录。派生流程见 `scripts/prepare_model.py`。
 
-## 运行（真实依赖安装成功后）
+## 运行
 
 ```bash
 python -m panda_mpc.demo --scenario hold --headless --duration 10 --seed 42
@@ -48,6 +48,8 @@ python -m pytest -q
 ```
 
 输出目录必须尚不存在，避免覆盖已有实验。默认自动创建带时间戳的目录。退出码：0 正常结束，2 出现明确拒绝目标但运行正常，1 非预期失败或监测停止，130 手动中断。GUI 显示最新目标、实际轨迹与逐点 FK 计算的预测曲线，终端显示编号、误差和耗时。headless 不导入 viewer、不创建 Renderer。
+
+`--duration 10` 表示仿真10秒后自动结束并关闭窗口；希望看更久可改为30或60。退出0表示程序正常结束，是否达到目标请同时查看终端的Final goal和summary中的fixed_goal_acceptance。
 
 结果包含解析配置、版本和资源哈希、完整目标生命周期/扰动/监测事件、逐步 NPZ、MPC ticks、summary 和 plots。缺依赖的启动同样保存错误；没有物理数据时不生成伪造曲线。
 

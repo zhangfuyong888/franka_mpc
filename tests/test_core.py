@@ -261,3 +261,18 @@ def test_offline_telemetry_and_analysis_plots(tmp_path):
     assert (path/'summary.json').exists()
     with pytest.raises(FileExistsError):
         Telemetry(path, c)
+
+
+def test_reference_acceleration_continues_from_accepted_curve():
+    """Measured-state endpoint offsets must not turn bounded MPC input into braking."""
+    g = ReferenceGenerator(state(), -np.ones(7), np.ones(7), np.ones(7), np.full(7, 2.), .02)
+    a = np.full(7, 1.5)
+    first = g.advance(0., a, 1)
+    qs, vs, _ = first.sample(.02)
+    next_segment = g.advance(.02, a, 2)
+    np.testing.assert_allclose(next_segment.sample(.02)[0], qs, atol=1e-15)
+    np.testing.assert_allclose(next_segment.sample(.02)[1], vs, atol=1e-15)
+    np.testing.assert_allclose(next_segment.sample(.04)[0], qs+.02*vs+.5*.02**2*a, atol=1e-15)
+    np.testing.assert_allclose(next_segment.sample(.031)[2], a, atol=1e-10)
+    assert next_segment.alpha == 1.
+    assert next_segment.legal(-np.ones(7), np.ones(7), np.ones(7), np.full(7, 2.))

@@ -65,6 +65,21 @@ class ReferenceGenerator:
     def boundary(self, t):
         return self.segment.sample(t)
 
+    def advance(self, t, acceleration, goal_id):
+        """Integrate the first MPC input from the last accepted reference boundary.
+
+        MPC still starts at measured q/dq. Its one-step measured-state endpoint
+        is logged, but forcing that endpoint into a 20 ms Hermite segment would
+        amplify tracking offsets by O(1/T²), repeatedly brake and stall. This
+        equivalent C1 scheme keeps q/v continuous and follows the optimized
+        acceleration, with the same exact whole-interval limits and brake fallback.
+        """
+        qs, vs, _ = self.boundary(t)
+        acceleration = np.asarray(acceleration, dtype=float)
+        qe = qs+self.T*vs+0.5*self.T**2*acceleration
+        ve = vs+self.T*acceleration
+        return self.update(t, qe, ve, goal_id)
+
     def update(self, t, qe, ve, goal_id, braking=False):
         qs, vs, _ = self.boundary(t)
         # Acceleration selected as a whole curve; samples are never clipped.

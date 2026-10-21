@@ -1,8 +1,10 @@
 # 08：实验、实测证据和调参
 
+当前已补齐真实仿真依赖并完成全部headless场景，最新结果见 [当前验收](validation.md)。以下保留原生OSQP参数对照，并更新物理场景状态。
+
 ## 已实际完成的离线验证
 
-`python -m pytest -q -ra`：14 passed、7 skipped。详细输出见 [test_results](test_results.txt)。跳过的都需要真实 MuJoCo/mink/Python OSQP，不把这些跳过算通过。
+`python -m pytest -q -W error`：22 passed、0 skipped、无警告。详细输出见 [test_results](test_results.txt)。真实MuJoCo/mink/Python OSQP集成测试已实际通过。
 
 `python scripts/verify_native_osqp.py` 使用本机已有 CasADi3.6.7 + OSQP C0.6.3，调用生产 MPCProblem 构造矩阵，实际执行每组400次滚动优化。初始0、目标0.6 rad、2秒改为-0.4 rad，仿真8秒。每次检查初值和 Gz 硬界，再推进理想双积分。它不调用生产 Python OSQP，也不调用 MuJoCo。
 
@@ -17,19 +19,19 @@
 
 ![理想双积分与参数对照](evidence/native_osqp/comparison.png)
 
-## 真实仿真实验：已实现入口，未通过验收
+## 真实仿真实验：已执行
 
 | 场景 | 计划 | 必查指标 | 当前状态 |
 |---|---|---|---|
-| hold | home保持10s | 漂移/速度/饱和 | 缺MuJoCo |
-| single_target | 0.2s激活[.48,.14,.50] | <1cm、<.02m/s连续.2s，后续保持 | 未测 |
-| switch | .2/.7/1.3s的A/B/C | 首命令ID、实际非零速度、无状态赋值 | 未测 |
-| random | 固定seed，2~4s间隔 | 拒采原因、按可用时间分类 | 未测 |
-| rapid_switch | .3s换目标 | 不排队，不要求每个被抢占目标到达 | 未测 |
-| invalid_goal | 1s目标[2,2,2] | 拒绝并制动，退出码2 | 未测 |
-| disturbance | 保持目标时外力矩 | 对照差异和恢复 | 未测 |
+| hold | home保持10s | 漂移/速度/饱和 | 通过 |
+| single_target | 0.2s激活[.48,.14,.50] | <1cm、<.02m/s连续.2s，后续保持 | 通过，详见当前验收 |
+| switch | .2/.7/1.3s的A/B/C | 首命令ID、实际非零速度、无状态赋值 | 通过，详见当前验收 |
+| random | 固定seed，2~4s间隔 | 拒采原因、按可用时间分类 | 通过，详见当前验收 |
+| rapid_switch | .3s换目标 | 不排队，不要求每个被抢占目标到达 | 通过，详见当前验收 |
+| invalid_goal | 1s目标[2,2,2] | 拒绝并制动，退出码2 | 通过，详见当前验收 |
+| disturbance | 保持目标时外力矩 | 对照差异和恢复 | 通过，详见当前验收 |
 
-命令全集见 [README](../README.md)。hold 实际启动因 `ModuleNotFoundError: mujoco` 退出1；安装失败细节见 [install_attempt](install_attempt.log)，没有到达/恢复/饱和计数或末端误差数字。
+命令全集见 [README](../README.md)。初次缺包错误仅为历史记录。当前单目标末端最终误差0.000859m、0饱和/0QP失败/0参考回退；外力对照最大实际偏移0.006780m，撤去后0.796s恢复，具体命令/摘要/图见 [当前验收](validation.md)。
 
 扰动设置是关节2广义力矩+6 Nm，从4.0s持续0.25s。每步覆盖、撤去清零，不修改状态；控制器不读取计划。使用相同seed/目标表/配置的 `--no-disturbance` 对照，分析 `--compare` 检查除注入开关外配置一致。报告注入前差异、最大偏移、是否超过数值噪声、最大误差、撤去后满足原阈值连续.2s的恢复时间、速度/力矩峰值、饱和/QP失败/降级。
 

@@ -6,7 +6,7 @@ $$\min_v\|J_pv-\kappa_pe_p\|_{W_p}^2+\lambda^2\|v\|^2+\text{姿态/关节软偏�
 
 阻尼抑制奇异附近的大逆解；冗余由接近 seed 的 PostureTask 处理。虚拟积分 $q^{j+1}=q^j+\Delta t_{IK}v^j$ 只更新独立 Configuration，七铰链允许加法形式，浮动基不能照搬。
 
-实际采用 mink 0.0.13 的 FrameTask/PostureTask，优化变量为位移 Δq，函数末尾返回 $v=\Delta q/\Delta t_{IK}$。该版本 build_ik 文档字符串有反向换算的笔误，以实际代码为准。项目调用 integrate_inplace，不把 IK 虚拟速度送到执行器。
+实际采用 mink 0.0.13 的 FrameTask/PostureTask，优化变量为位移 Δq。当前使用其公开 build_ik 构造问题，项目内显式转为 CSC 并通过 OSQP1.0.4 求解，再按 solve_ik 相同约定换算： $v=\Delta q/\Delta t_{IK}$。该版本 build_ik 文档字符串有反向换算的笔误，以实际代码为准。项目调用 integrate_inplace，不把 IK 虚拟速度送到执行器。
 
 令 $T_{wb}$ 为当前帧、$T_{wt}$ 为目标帧，FrameTask 误差为 $e=\log(T_{wb}^{-1}T_{wt})$，误差 Jacobian 为 $-J_{\log}(T_{wt}^{-1}T_{wb})J_b$，解 $J_e\Delta q\approx-\mathrm{gain}\,e$。Configuration 将 MuJoCo world 对齐 Jacobian 旋转到 body 坐标。SO(3)/SE(3) 使用对数而非欧拉角减法；教学 world 位置公式不是全部内部实现。
 
@@ -16,6 +16,6 @@ ConfigurationLimit 留 0.08 rad 余量；VelocityLimit 实现 $|\Delta q|\le v_{
 
 每个目标只解一次，成功后 q_goal 固定。失败有 reason，不追撤销目标。随机点先从 home 预筛、激活再从实测 seed 解；预筛不保证此次局部成功，也不保证路径无碰撞。
 
-例子 `python examples/01_fk_ik.py` 比较两个 seed，因缺依赖未成功运行。独立计算状态和终点合法性集成测试已写好并跳过，没有虚构 FK 数字。
+例子 `python examples/01_fk_ik.py` 比较两个 seed。依赖已补齐；独立计算状态/可达终点/无效目标测试已通过，并将 SparseConversionWarning 作为错误检查。项目不修改第三方源码，也不通过屏蔽警告处理转换。最新实测见 validation.md。
 
 错误：把 IK 当作有约束时域轨迹；把局部失败称为全局不可达。定位看 reason、seed、误差、迭代及余量。练习：将 orientation_cost 改为 0.02，实测位置成功率和关节分支变化。

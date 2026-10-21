@@ -19,9 +19,9 @@ MIT历史 Mbed URL（任务给定）读取时重定向至 ArmMbed GitHub 主页�
 
 ## 版本状态
 
-生产候选：Python3.10~3.12（优先3.11）、mujoco3.3.7、mink0.0.13、osqp1.0.4、qpsolvers4.8.1、numpy1.26.4、scipy1.15.2、PyYAML6.0.3、matplotlib3.10.7、pytest8.4.2。版本号固定在 pyproject，完整安装/API/传递依赖锁未验证。
+生产候选：Python3.10~3.12（优先3.11）、mujoco3.3.7、mink0.0.13、osqp1.0.4、qpsolvers4.8.1、numpy1.26.4、scipy1.15.2、PyYAML6.0.3、matplotlib3.10.7、pytest8.4.2。版本号固定在 pyproject，当前API和真实闭环已验证，干净环境完整传递依赖锁仍未验证。
 
-实际离线环境：Python3.10.20、NumPy1.26.4、SciPy1.15.2、PyYAML6.0.3、Matplotlib3.7.5、pytest9.1.1、CasADi3.6.7，其动态链接 OSQP C0.6.3。生产所需 mujoco/mink/osqp Python 均未安装。`environment_observed.txt` 是借用环境记录，非锁文件。
+实际离线环境：Python3.10.20、NumPy1.26.4、SciPy1.15.2、PyYAML6.0.3、Matplotlib3.7.5、pytest9.1.1、CasADi3.6.7，其动态链接 OSQP C0.6.3。初次验证时生产所需mujoco/mink/osqp Python未安装；当前均已补齐并完成真实测试，版本见 evidence/closed_loop/metadata.json。`environment_observed.txt` 是借用环境记录，非锁文件。
 
 ## mink推导约定
 

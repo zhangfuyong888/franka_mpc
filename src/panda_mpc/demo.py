@@ -1,5 +1,7 @@
 """Finite-duration command line experiments. GUI imports are strictly optional."""
 import argparse
+import json
+from pathlib import Path
 from datetime import datetime
 from .config import load_config
 from .runner import run
@@ -22,6 +24,16 @@ def main():
         c['disturbance_enabled'] = False
     output = a.output or f"outputs/{datetime.now():%Y%m%d-%H%M%S-%f}-{c['scenario']}"
     code = run(c, output, a.headless, a.events)
+    summary_file = Path(output)/'summary.json'
+    if summary_file.exists():
+        summary = json.loads(summary_file.read_text())
+        if 'final_error_m' in summary:
+            last = summary.get('targets', [])
+            status = last[-1]['status'] if last else 'none'
+            print(f"Final goal: {status}; EE error: {summary['final_error_m']:.6f} m; "
+                  f"QP failures: {summary['qp_failures']}; saturated steps: {summary['saturated_steps']}")
+        if summary.get('fixed_goal_acceptance') is False:
+            print('Target did not satisfy the configured position/speed/dwell criteria; see summary.json.')
     print(f'Artifacts: {output}; exit code: {code}')
     return code
 
