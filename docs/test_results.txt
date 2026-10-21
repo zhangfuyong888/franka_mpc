@@ -1,0 +1,32 @@
+..............sssssss                                                    [100%]
+=============================== warnings summary ===============================
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:88
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:88
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:88
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:88
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:88
+  /home/zfy/miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:88: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:92
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:92
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:92
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:92
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:92
+  /home/zfy/miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_fontconfig_pattern.py:92: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+../../miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_mathtext.py:30
+  /home/zfy/miniconda3/envs/tv/lib/python3.10/site-packages/matplotlib/_mathtext.py:30: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_integration.py:13: Missing real dependencies: mujoco, mink, osqp
+SKIPPED [1] tests/test_integration.py:42: Missing real dependencies: mujoco, mink, osqp
+SKIPPED [1] tests/test_integration.py:57: Missing real dependencies: mujoco, mink, osqp
+SKIPPED [1] tests/test_integration.py:75: Missing real dependencies: mujoco, mink, osqp
+SKIPPED [1] tests/test_integration.py:89: Missing real dependencies: mujoco, mink, osqp
+SKIPPED [1] tests/test_integration.py:110: Missing real dependencies: mujoco, mink, osqp
+SKIPPED [1] tests/test_integration.py:122: Missing real dependencies: mujoco, mink, osqp
+14 passed, 7 skipped, 11 warnings in 1.92s

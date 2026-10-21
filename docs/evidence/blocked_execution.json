@@ -1,0 +1,6 @@
+{
+  "wall_seconds": 0.0002828560000125435,
+  "simulated_seconds": 0.0,
+  "error": "Traceback (most recent call last):\n  File \"/home/zfy/franka_mpc_tracking/panda-mpc-tracking/src/panda_mpc/runner.py\", line 26, in run\n    sim = Simulation(config)\n  File \"/home/zfy/franka_mpc_tracking/panda-mpc-tracking/src/panda_mpc/sim.py\", line 7, in __init__\n    import mujoco\nModuleNotFoundError: No module named 'mujoco'\n",
+  "stopped": false
+}

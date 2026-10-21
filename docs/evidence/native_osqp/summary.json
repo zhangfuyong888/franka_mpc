@@ -1,0 +1,65 @@
+{
+  "backend": "CasADi 3.6.7 OSQP C plugin; not Python OSQP or MuJoCo",
+  "experiments": [
+    {
+      "n": 1,
+      "horizon": 25,
+      "S": 0.3,
+      "nz": 77,
+      "final_position_error": 3.4485850841647903e-09,
+      "final_velocity": 1.3452911566518081e-08,
+      "peak_velocity": 0.7,
+      "peak_acceleration": 2.0,
+      "max_input_change": 2.0,
+      "max_constraint_violation": 3.425346181554819e-16,
+      "solve_p50_ms": 0.15331549991515203,
+      "solve_p95_ms": 1.5527820498505036,
+      "solve_max_ms": 2.9825390001860796
+    },
+    {
+      "n": 7,
+      "horizon": 25,
+      "S": 0.3,
+      "nz": 539,
+      "final_position_error": 3.4485850841647903e-09,
+      "final_velocity": 1.3452911566518081e-08,
+      "peak_velocity": 0.7,
+      "peak_acceleration": 2.0,
+      "max_input_change": 2.0,
+      "max_constraint_violation": 3.425346181554819e-16,
+      "solve_p50_ms": 1.010029999974904,
+      "solve_p95_ms": 12.2857866499429,
+      "solve_max_ms": 23.107538999965982
+    },
+    {
+      "n": 1,
+      "horizon": 15,
+      "S": 0.3,
+      "nz": 47,
+      "final_position_error": 5.786685116082602e-07,
+      "final_velocity": 1.5965711339951617e-06,
+      "peak_velocity": 0.7,
+      "peak_acceleration": 2.0,
+      "max_input_change": 2.0,
+      "max_constraint_violation": 3.012083041754182e-16,
+      "solve_p50_ms": 0.10748250008418836,
+      "solve_p95_ms": 0.8295803001260533,
+      "solve_max_ms": 1.4524890000302548
+    },
+    {
+      "n": 1,
+      "horizon": 25,
+      "S": 3.0,
+      "nz": 77,
+      "final_position_error": 1.0033592012792525e-08,
+      "final_velocity": 3.640448817660716e-08,
+      "peak_velocity": 0.7000000000000006,
+      "peak_acceleration": 2.0,
+      "max_input_change": 1.9648422480127796,
+      "max_constraint_violation": 4.440892098500626e-16,
+      "solve_p50_ms": 0.18428999999287043,
+      "solve_p95_ms": 7.534086549924266,
+      "solve_max_ms": 11.988403000032122
+    }
+  ]
+}

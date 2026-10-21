@@ -1,0 +1,8 @@
+<!-- Modified project scene: bundled torque Panda and ground plane. See LICENSE/provenance.json. -->
+<mujoco model="panda_tracking">
+  <include file="panda.xml"/>
+  <visual><global azimuth="135" elevation="-25"/></visual>
+  <worldbody>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.24 0.27 0.30 1"/>
+  </worldbody>
+</mujoco>

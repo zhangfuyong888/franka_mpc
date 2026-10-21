@@ -1,0 +1,13 @@
+Python 3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]
+numpy==1.26.4
+scipy==1.15.2
+PyYAML==6.0.3
+matplotlib==3.7.5
+pytest==9.1.1
+setuptools==79.0.1
+wheel==0.48.0
+CasADi==3.6.7
+mujoco: not installed
+mink: not installed
+osqp Python: not installed
+osqp native C: 0.6.3
