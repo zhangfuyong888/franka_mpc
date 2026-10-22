@@ -1,71 +1,65 @@
-# Panda 在线目标跟踪：IK + 关节空间线性 MPC + MIT 关节阻抗仿真
+# Panda 在线目标跟踪仿真
 
-**当前状态：真实 headless 闭环已验证。** 当前环境已安装 MuJoCo3.3.7、mink0.0.13、OSQP1.0.4。`pytest -q -W error` 的22项测试全部通过，七种场景和扰动对照已运行。单目标最终误差约0.86mm，默认运行没有QP失败、饱和或参考回退。GUI自动验证仍受工具环境无法连接X11限制；完整证据见 [validation](docs/validation.md)。
+本项目让七轴 Panda 机械臂追踪运行中出现的末端位置目标：用 IK（逆运动学）求关节终点，用线性 MPC（模型预测控制）安排后续运动，再通过连续参考和 MIT 形式的关节阻抗产生力矩，由 MuJoCo 仿真执行。新目标可以打断旧目标，实际位置和速度继续演化。
 
-控制路线为IK → 关节空间加速度MPC → 从上一参考边界连续积分第一优化输入 → MIT执行适配器。保留解析整段检查与制动，不重置实际状态。模型、67个网格和许可随包安装。警告来源及连续参考修复见 [连续参考](docs/03_online_trajectory.md)。
+```mermaid
+flowchart LR
+    G[最新末端目标] --> I[IK 关节终点]
+    I --> M[20 ms MPC]
+    M --> R[连续位置与速度参考]
+    R --> C[2 ms MIT反馈 + 动力学前馈]
+    C --> P[限幅力矩 → MuJoCo]
+    P --> S[实测位置与速度]
+    S --> M
+    S --> C
+    S --> I
+```
 
-## 安装
+当前实现是离散目标点到达、运动途中换目标和外力恢复仿真；不含连续目标轨迹预瞄、在线参数自适应、全局绕障或真实机器人通信。模型、网格和许可随包提供，启动无需下载模型。
 
-优先 Python 3.11；本机只有可用的 3.10，本次实际运行采用 3.10.20。请在项目目录执行：
+## 安装与启动
+
+支持 Python 3.10～3.12。以下以 3.11 为例，在项目目录执行；若已有可用 `.venv`，直接激活即可。
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
-python -m pip freeze --all > requirements.lock
 python -m pip check
 ```
 
-`pyproject.toml` 固定了主要依赖版本；**完整传递依赖锁尚未生成和验证**。不要把 `docs/environment_observed.txt` 当作安装锁，它记录本机借用环境的已安装包。本机已完成真实集成测试；干净环境安装与传递锁仍需独立验证。
-
-本机为继续离线工作，已通过 `/home/zfy/miniconda3/envs/tv/bin/python` 创建允许读取该环境包的项目 `.venv`，只在项目内写入：
+主要依赖版本固定在 [pyproject.toml](pyproject.toml)。完整传递依赖锁及全新环境安装尚未验收；已有测试环境的情况见 [验证记录](docs/validation.md)。
 
 ```bash
-.venv/bin/python -m pip install --no-deps --no-build-isolation -e .
-.venv/bin/python -m pytest -q -ra
-.venv/bin/python scripts/verify_native_osqp.py
-```
-
-第一条只安装项目本身，不能补齐仿真依赖。模型已包含在包中；启动不下载模型，不依赖邻近参考目录。派生流程见 `scripts/prepare_model.py`。
-
-## 运行
-
-```bash
-python -m panda_mpc.demo --scenario hold --headless --duration 10 --seed 42
+# 固定目标、运动途中切换、随机目标：无窗口运行
 python -m panda_mpc.demo --scenario single_target --headless --duration 10 --seed 42
 python -m panda_mpc.demo --scenario switch --headless --duration 12 --seed 42
 python -m panda_mpc.demo --scenario random --headless --duration 30 --seed 42
-python -m panda_mpc.demo --scenario rapid_switch --headless --duration 10 --seed 42
-python -m panda_mpc.demo --scenario invalid_goal --headless --duration 8 --seed 42
-python -m panda_mpc.demo --scenario disturbance --headless --duration 12 --seed 42 --output outputs/push
-python -m panda_mpc.demo --scenario disturbance --headless --duration 12 --seed 42 --no-disturbance --output outputs/control
-python -m panda_mpc.analyze --run-dir outputs/push --compare outputs/control
-python -m panda_mpc.demo --scenario random --seed 42
-python -m panda_mpc.demo --config configs/default.yaml --headless --output outputs/manual-run
-python -m panda_mpc.analyze --run-dir outputs/manual-run
-python -m panda_mpc.demo --scenario switch --events configs/switch_events.json --headless --output outputs/replay
-python -m pytest -q
+
+# 有桌面显示时，去掉 --headless 打开可视化
+python -m panda_mpc.demo --scenario single_target --duration 10 --seed 42
+
+# 外力实验；完整的同配置无扰动对照命令见验证文档
+python -m panda_mpc.demo --scenario disturbance --headless --duration 12 --seed 42
 ```
 
-输出目录必须尚不存在，避免覆盖已有实验。默认自动创建带时间戳的目录。退出码：0 正常结束，2 出现明确拒绝目标但运行正常，1 非预期失败或监测停止，130 手动中断。GUI 显示最新目标、实际轨迹与逐点 FK 计算的预测曲线，终端显示编号、误差和耗时。headless 不导入 viewer、不创建 Renderer。
+`--duration` 是仿真秒数，到时自动结束。可用 `--config configs/default.yaml` 覆盖配置，用 `--output outputs/my-run` 指定尚不存在的输出目录，用 `--events configs/switch_events.json` 回放目标表。
 
-`--duration 10` 表示仿真10秒后自动结束并关闭窗口；希望看更久可改为30或60。退出0表示程序正常结束，是否达到目标请同时查看终端的Final goal和summary中的fixed_goal_acceptance。
+## 查看结果
 
-结果包含解析配置、版本和资源哈希、完整目标生命周期/扰动/监测事件、逐步 NPZ、MPC ticks、summary 和 plots。缺依赖的启动同样保存错误；没有物理数据时不生成伪造曲线。
+默认输出到 `outputs/时间戳-场景/`。先看终端的 `Final goal` 和 `EE error`，再看 `summary.json` 中的目标状态、饱和、QP 失败及计算耗时。`plots/error.png` 显示末端误差；`joints.png` 对比实际与参考，`torques.png` 显示力矩。原始数据在 `telemetry.npz`，目标历史在 `events.json`。
 
-## 阅读顺序
+```bash
+python -m panda_mpc.analyze --run-dir outputs/my-run
+python -m pytest -q -W error
+```
 
-[总览](docs/00_overview.md) → [模型](docs/01_mujoco_model.md) → [IK](docs/02_kinematics_ik.md) → [在线轨迹](docs/03_online_trajectory.md) → [MPC](docs/04_mpc_theory.md) → [稀疏 QP](docs/05_osqp_implementation.md) → [MIT](docs/06_mit_control.md) → [闭环时序](docs/07_closed_loop.md) → [实验](docs/08_experiments.md) → [源码导读](docs/09_code_walkthrough.md)。
+退出码 `0` 表示正常结束，不保证目标已经到达；`2` 表示有目标被明确拒绝；`1` 为异常或监测停止；`130` 为手动中断。到达判据与各实验结果见 [验证文档](docs/validation.md)。
 
-符号见 [notation](docs/notation.md)，实际证据见 [validation](docs/validation.md)，第三方来源见 [references](docs/references.md) 和 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md)。
+## 推荐阅读顺序
 
-## 故障排查
+1. [项目怎样运行](docs/architecture.md)：模块分工、双周期主循环、目标替换和失败处理。
+2. [核心算法与数学实现](docs/control_math.md)：IK → MPC → 连续参考 → MIT，含与代码对应的公式和小例子。
+3. [怎样验证效果](docs/validation.md)：实验命令、指标、原有证据与本次重新验证结果。
 
-- `No module named mujoco/mink/osqp`：核心依赖没有安装，不是控制算法失败。查看 `docs/install_attempt.log`。
-- 系统 Python 无 `ensurepip`：使用已有含 ensurepip 的 Python，或者在用户环境安装 Python；本项目不修改全局环境。
-- 已有输出目录：使用新的 `--output`；项目不会覆盖。
-- `No legal C1 segment`：查看上一参考边界、桥接系数、整个区间加速度；不能逐元素裁剪参考掩盖问题。
-- QP 不可行：检查真实初值和制动距离；不能裁剪实测状态。
-- 图形库失败：先用 `--headless`。GUI 验证仍是未完成项。
-
-本项目只做仿真，不提供可直接上真机的通信或安全保证。
+图形窗口需要可用的桌面显示；工具环境此前无法连接 X11，尚未完成 GUI 自动验收，可先使用 `--headless`。同步 IK 可能使目标激活周期超时，本项目不承诺硬实时或真机安全。第三方模型许可及使用范围见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [参考来源](docs/references.md)。

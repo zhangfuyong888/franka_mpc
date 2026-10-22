@@ -43,6 +43,7 @@ class Robot:
         self.home = model.key('home').qpos.copy()
         if np.any(self.lower >= self.upper) or np.any(self.home < self.lower) or np.any(self.home > self.upper):
             raise ValueError('Invalid position margin/home')
+        # FK/预测接触复用独立数据，不把候选构型写回物理仿真。
         self.scratch = mujoco.MjData(model)
         self.base_body = model.body('link0').id
 
@@ -73,6 +74,7 @@ class Robot:
         return result
 
     def check_prediction(self, q_pred, penetration=0.001):
+        """逐个构型检查穿透；不检查样点之间的连续扫掠路径。"""
         import mujoco
         for k, q in enumerate(q_pred):
             self.scratch.qpos[:] = q

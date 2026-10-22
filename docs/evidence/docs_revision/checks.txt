@@ -1,0 +1,16 @@
+Documentation/comment revision checks; 2026-10-22
+Python 3.10.20
+Baseline HEAD: 162493949bd7a47770836f9d742c64f9271c478b
+PASS: docstring-stripped AST equal for 9 changed Python files: src/panda_mpc/dynamics.py, src/panda_mpc/goals.py, src/panda_mpc/ik.py, src/panda_mpc/mit.py, src/panda_mpc/mpc.py, src/panda_mpc/reference.py, src/panda_mpc/robot.py, src/panda_mpc/runner.py, src/panda_mpc/sim.py
+PASS: other source, assets, configs, dependencies, tests, examples and scripts byte-identical to HEAD
+PASS: 26 existing evidence/log files preserved byte-for-byte
+PASS: /home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python -m compileall -q src scripts examples tests
+PASS: /home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python scripts/check_docs.py: 92 relative Markdown links verified
+PASS: git diff --check
+PASS: default config copies match; ns=364, nz=539, G=(889,539)
+PASS: standalone numerical example in control_math.md executes via production LinearMPC
+PASS: documented numerical example table matches computed dynamics and full cost to 6 decimal places
+PASS: primary-document fenced code/display-math pairs balanced; Python snippets parse
+Manual review: relative source references, symbols/units, QP blocks/cost, IK backend, reference continuity, MIT signs, failure order and metric scope checked against local code
+Dependency versions: numpy=1.26.4, scipy=1.15.2, mujoco=3.3.7, mink=0.0.13, osqp=1.0.4, pytest=8.4.2
+Existing suite: .venv/bin/python -m pytest -q -W error -> 22 passed in 31.52s

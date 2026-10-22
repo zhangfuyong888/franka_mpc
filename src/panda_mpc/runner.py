@@ -1,4 +1,7 @@
-"""Integer-tick multirate loop. Physical state is never assigned during a run."""
+"""串起目标、IK、MPC、参考和力矩执行；用整数 tick 协调 2 ms / 20 ms 周期。
+
+流程见 docs/architecture.md；运行中不直接赋值物理 qpos/qvel。
+"""
 from dataclasses import asdict
 from time import perf_counter
 import traceback
@@ -17,6 +20,7 @@ from .types import JointCommand
 
 
 def run(config, output, headless=True, events_file=None):
+    """执行有限时长实验，保存数据并分析；返回程序退出码，而非单独的到达判据。"""
     logger = Telemetry(output, config)
     goals = disturbance = monitor = viewer = None
     sampling, error = {}, None
@@ -29,8 +33,10 @@ def run(config, output, headless=True, events_file=None):
                    'velocity': config['velocity'], 'acceleration': config['acceleration']})
         ik = InverseKinematics(robot, config)
         mpc = LinearMPC(robot.lower, robot.upper, config['velocity'], config['acceleration'], config)
+        # IK/FK 查询和名义动力学使用独立计算数据；只有 sim.data 是实际物理状态。
         nominal = NominalDynamics(config['dt'])
         adapter = MITAdapter(sim.model, robot, config['torque'])
+        # 随机场景先生成并从 home 做 IK 预筛；激活时仍会从当时实测状态重新求 IK。
         events, sampling = (read_events(events_file), {'replay': str(events_file)}) if events_file else make_events(config, robot, ik)
         goals = GoalManager(events, config['reach_error'], config['reach_speed'], config['reach_dwell'])
         disturbance = Disturbance(config)
@@ -41,6 +47,7 @@ def run(config, output, headless=True, events_file=None):
         if not headless:
             from .visualizer import Visualizer
             viewer = Visualizer(sim)
+        # 默认 20 ms / 2 ms = 10；浮点时间只记录，调度使用整数 tick。
         stride = round(config['period']/config['dt'])
         steps = int(np.floor(config['duration']/config['dt']+1e-9))
         last_v, last_pred, predicted_p = state.dq.copy(), None, []
@@ -49,6 +56,7 @@ def run(config, output, headless=True, events_file=None):
         a_ideal = np.zeros(7)
         for tick in range(steps):
             inner_start = perf_counter()
+            # step1 更新当前派生量，再读位置/速度/末端量；此时尚未推进下一物理步。
             state = sim.begin_step()
             expected_t = tick*config['dt']
             if abs(state.t-expected_t) > 1e-8:
@@ -56,10 +64,12 @@ def run(config, output, headless=True, events_file=None):
             monitor.inspect_state(state, data)
             if monitor.stopped:
                 break
+            # 慢环：先激活最新目标，再 IK、MPC、接续参考；同步 IK 可能超出墙钟预算。
             if tick % stride == 0:
                 tick_start = perf_counter()
                 new = goals.consume(state.t)
                 if new:
+                    # 新目标只更新任务终点；保留实测位置/速度、上一参考边界和求解器状态。
                     outcome = ik.solve(new.event.position_world, state.q)
                     new.ik = asdict(outcome)
                     if outcome.success:
@@ -72,11 +82,14 @@ def run(config, output, headless=True, events_file=None):
                 qgoal = active.q_goal if active else None
                 if last_pred is not None:
                     prediction_error = np.r_[state.q, state.dq]-last_pred
+                # previous_a 是已接受参考边界的加速度，不是实测差分，也非旧理想输入。
                 boundary_q, boundary_v, previous_a = ref.boundary(state.t)
                 braking, reason, collision = qgoal is None, '', None
                 if not braking:
+                    # 优化初值必须是实测状态；不能用 boundary_q/v 替代它。
                     result = mpc.solve(state.q, state.dq, qgoal, previous_a)
                     if result.success:
+                        # 接触只检查离散预测构型，既不是 QP 约束，也不是连续避障保证。
                         collision = robot.check_prediction(result.q_pred, config['contact_penetration'])
                         if collision:
                             braking, reason = True, 'predicted_contact'
@@ -90,6 +103,7 @@ def run(config, output, headless=True, events_file=None):
                     if reason:
                         monitor.failure(state.t, reason, goal_id)
                 if braking:
+                    # IK 拒绝时不恢复旧目标；QP 失败/预测接触时也从当前参考边界制动。
                     last_pred, predicted_p, a_ideal = None, [], np.full(7, np.nan)
                     result_status = 'braking:'+reason if reason else 'rejected_goal_braking'
                     segment = ref.update(state.t, boundary_q, np.zeros(7), goal_id, braking=True)
@@ -117,6 +131,7 @@ def run(config, output, headless=True, events_file=None):
             inner_control_start = perf_counter()
             active = goals.active
             goal_id = active.event.goal_id if active else -1
+            # 快环：每 2 ms 采样同一解析曲线，再以实测 q/dq 计算前馈和 MIT 反馈。
             qr, vr, ar = ref.segment.sample(state.t)
             ff = nominal.feedforward(state.q, state.dq, ar, config['feedforward'])
             command = JointCommand(qr, vr, config['kp'], config['kd'], ff, state.t,
@@ -125,6 +140,7 @@ def run(config, output, headless=True, events_file=None):
             if active and active.first_command_at is None:
                 active.first_command_at = state.t
             monitor.inspect_actuation(state.t, actuation, goal_id)
+            # 外力只写入 plant；控制器仅通过后续实测状态感知其影响。
             external = disturbance.apply(data, state.t)
             goals.observe(state)
             measured_a = (state.dq-last_v)/config['dt'] if tick else np.full(7, np.nan)
@@ -132,6 +148,7 @@ def run(config, output, headless=True, events_file=None):
             inner_elapsed = perf_counter()-inner_control_start
             if tick % stride == 0:
                 logger.ticks[-1]['elapsed'] = perf_counter()-tick_start
+            # 行数据都是步前 t 的状态和本步命令；实际加速度是 qvel 后向差分。
             logger.append(t=state.t, q=state.q, dq=state.dq, p_ee=state.p_ee, v_ee=state.v_ee,
                 goal_id=goal_id, target=active.event.position_world if active else np.full(3, np.nan),
                 goal_status=active.status if active else 'none',
@@ -147,6 +164,7 @@ def run(config, output, headless=True, events_file=None):
                 physics_elapsed=0., qp_status=logger.ticks[-1]['status'],
                 contact_count=data.ncon)
             physics_start = perf_counter()
+            # ctrl 和外力都写完后，step2 才让物理状态推进 dt。
             sim.end_step()
             logger.rows[-1]['physics_elapsed'] = np.asarray(perf_counter()-physics_start)
             if abs(data.time-(tick+1)*config['dt']) > 1e-8:

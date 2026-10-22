@@ -60,6 +60,7 @@ class GoalManager:
         self.within_since = None
 
     def consume(self, t):
+        """消费本 tick 到期事件，只激活最新一个；保留旧目标已到达的历史。"""
         due = []
         while self.index < len(self.records) and self.records[self.index].event.scheduled_time <= t+1e-10:
             due.append(self.records[self.index])
@@ -78,6 +79,7 @@ class GoalManager:
         return new
 
     def observe(self, state):
+        """用实测末端位置/速度累计驻留时间；reached 后仍继续追踪同一终点。"""
         r = self.active
         if r is None or r.status != 'active' or r.q_goal is None:
             return

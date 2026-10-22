@@ -11,7 +11,7 @@
 | [MuJoCo仿真流程](https://mujoco.readthedocs.io/en/3.3.7/programming/simulation.html) | 3.3.7 | split step、状态与回调 |
 | [MuJoCo引擎源码](https://github.com/google-deepmind/mujoco/blob/3.3.7/src/engine/engine_forward.c) | 3.3.7 | step2积分和warning/reset |
 | [MuJoCo动力学](https://mujoco.readthedocs.io/en/stable/computation/index.html) | 文档入口 | bias/passive/外力符号 |
-| [OSQP Python](https://osqp.org/docs/interfaces/python.html) | 代码目标1.0.4，尚未安装 | CSC/update/warm start/残差字段 |
+| [OSQP Python](https://osqp.org/docs/interfaces/python.html) | 固定依赖 1.0.4，已有真实求解记录 | CSC/update/warm start/残差字段 |
 | [OSQP MPC](https://osqp.org/docs/examples/mpc.html) | 官方示例入口 | 稀疏状态输入堆叠思路 |
 | [libfranka Robot](https://frankarobotics.github.io/libfranka/latest/classfranka_1_1Robot.html) | 阅读时0.21.3 | 确认位置/速度/力矩接口，未安装硬件依赖 |
 
@@ -19,10 +19,10 @@ MIT历史 Mbed URL（任务给定）读取时重定向至 ArmMbed GitHub 主页�
 
 ## 版本状态
 
-生产候选：Python3.10~3.12（优先3.11）、mujoco3.3.7、mink0.0.13、osqp1.0.4、qpsolvers4.8.1、numpy1.26.4、scipy1.15.2、PyYAML6.0.3、matplotlib3.10.7、pytest8.4.2。版本号固定在 pyproject，当前API和真实闭环已验证，干净环境完整传递依赖锁仍未验证。
+固定依赖：Python3.10~3.12（优先3.11）、mujoco3.3.7、mink0.0.13、osqp1.0.4、qpsolvers4.8.1、numpy1.26.4、scipy1.15.2、PyYAML6.0.3、matplotlib3.10.7、pytest8.4.2。版本号固定在 pyproject，当前API和真实闭环已验证，干净环境完整传递依赖锁仍未验证。
 
-实际离线环境：Python3.10.20、NumPy1.26.4、SciPy1.15.2、PyYAML6.0.3、Matplotlib3.7.5、pytest9.1.1、CasADi3.6.7，其动态链接 OSQP C0.6.3。初次验证时生产所需mujoco/mink/osqp Python未安装；当前均已补齐并完成真实测试，版本见 evidence/closed_loop/metadata.json。`environment_observed.txt` 是借用环境记录，非锁文件。
+最初离线验证环境（历史）：Python3.10.20、NumPy1.26.4、SciPy1.15.2、PyYAML6.0.3、Matplotlib3.7.5、pytest9.1.1、CasADi3.6.7，其动态链接 OSQP C0.6.3。初次验证时生产所需mujoco/mink/osqp Python未安装；当前均已补齐并完成真实测试，版本见 evidence/closed_loop/metadata.json。`environment_observed.txt` 是借用环境记录，非锁文件。
 
 ## mink推导约定
 
-Configuration.get_frame_jacobian 将 MuJoCo world 对齐 Jacobian 旋转至 body 系。FrameTask.compute_error 使用目标相对于当前的 SE(3) log，compute_jacobian 为负号加 jlog 修正。solve_ik 的最终实际返回是 delta_q/dt；旧版 build_ik 文档注释存在反向换算笔误。讲解必须跟实际源代码，见 [IK章节](02_kinematics_ik.md)。
+Configuration.get_frame_jacobian 将 MuJoCo world 对齐 Jacobian 旋转至 body 系。FrameTask.compute_error 使用目标相对于当前的 SE(3) log，compute_jacobian 为负号加 jlog 修正。solve_ik 的最终实际返回是 delta_q/dt；旧版 build_ik 文档注释存在反向换算笔误。讲解必须跟实际源代码，见 [IK章节](control_math.md)。
