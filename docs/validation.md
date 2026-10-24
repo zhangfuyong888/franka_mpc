@@ -5,7 +5,7 @@
 
 ## 1. 最新验证结果
 
-主要验证环境：Ubuntu 22.04、Python 3.10.20、MuJoCo 3.3.7、mink 0.0.13、OSQP 1.0.4。
+本机主要验证环境：Ubuntu 22.04、Python 3.10.20、MuJoCo 3.3.7、mink 0.0.13、OSQP 1.0.4。
 
 | 验证 | 实际结果 | 证据 |
 |---|---|---|
@@ -20,6 +20,21 @@
 独立测试验证的是 **wheel 内的代码**，不是源码目录的 editable 安装。
 [模块来源记录](evidence/finalization/isolated-package-locations.log) 确认核心模块都在独立环境中；
 [依赖检查](evidence/finalization/isolated-pip-check.log) 没有损坏依赖。
+
+### GitHub Actions 在线验证
+
+2026-10-24，提交 `d5356ee73d22a7386486311102f2ac16697b93e4` 的
+[远端运行 #40077821017](https://github.com/zhangfuyong888/franka_mpc/actions/runs/40077821017) 三个任务全部通过。
+[状态快照](evidence/github-ci/20261024-d5356ee.json) 保存提交号、任务和步骤结论；该记录对应这个提交，后续提交以各自的 Actions 结果为准。
+
+| 任务（Ubuntu 22.04） | 实际结果 |
+|---|---|
+| Python 3.10 | 在线安装、依赖自检与文档链接通过；非视频测试 **48 passed，1 deselected，104.90 s**；第二个干净环境的 wheel 构建、安装、测试和第一课通过 |
+| Python 3.11 | 在线安装、依赖自检与文档链接通过；非视频测试 **48 passed，1 deselected，71.82 s**；第二个干净环境的 wheel 构建、安装、测试和第一课通过 |
+| 视频（Python 3.10） | EGL 实际渲染自检通过；视频测试 **1 passed，48 deselected，15.83 s** |
+
+运行页面的 Artifacts 提供 `lesson-results-py3.10` 和 `lesson-results-py3.11`，包含独立安装日志、
+`verification.json` 及第一课输出。这补充了下文的本机离线验证，确认公开依赖可在线安装。
 
 ## 2. 修复了什么数值问题
 
@@ -50,16 +65,17 @@
 
 ## 3. 安装验证的来源与边界
 
-在线 PyPI 请求在当前工具环境返回 `Operation not permitted`，实际探测见
-[网络记录](evidence/finalization/online-probe.txt)。不能声称本轮完成了从 PyPI 下载的全新安装，
-也没有把远端 GitHub Actions 标为已运行。
+本机工具环境的在线 PyPI 请求返回 `Operation not permitted`，实际探测见
+[网络记录](evidence/finalization/online-probe.txt)。因此本机采用下述离线验证；
+随后 GitHub Actions 在独立远端机器完成在线安装及干净环境验证，结果见上表。两类证据分别记录。
 
 为验证代码不依赖现有 Python 环境，本轮从本机已安装分发包构建了**仅用于本机测试的离线 wheelhouse**，
 包含明确记录的 Conda BLAS/Fortran 运行库副本，再在 `include-system-site-packages=false` 的新 venv 中
 安装构建工具、构建项目 wheel、安装全部依赖，运行 pip check、测试和第一课。
 [38 项离线依赖来源与哈希](evidence/finalization/offline-dependency-provenance.json) 已保存。
 这些重打包二进制不随 GitHub 仓库发布，不应冒充官方 PyPI wheel 或跨机器通用离线包。
-这证明本机隔离运行成功，不证明在线索引、Python 3.11/3.12 或另一操作系统都已验收。
+这份离线记录只证明本机隔离运行成功。在线安装和 Python 3.11 的验证由上面的 GitHub Actions 提供；
+Python 3.12、Windows 和 macOS 尚未验收。
 
 可在有网络的机器执行同一流程：
 
@@ -72,7 +88,7 @@ python scripts/verify_install.py
 已有同平台依赖 wheelhouse 时可显式指定 `--offline-wheelhouse /path/to/wheels`；来源会写入记录。
 
 [GitHub 工作流](../.github/workflows/tutorial.yml) 已配置 Python 3.10/3.11 的测试和第二个干净环境验收，
-视频 EGL 独立测试；上传后自动触发，尚未在远端执行。Python 3.10 的
+视频 EGL 独立测试，已在上述提交实际通过；后续 push、Pull Request 或手动运行会重新检查。Python 3.10 的
 [版本约束](../requirements/constraints-py310-linux.txt) 固定依赖版本，但不是带官方 PyPI 文件哈希的锁文件。
 安装脚本拒绝覆盖已有环境，基础教程不要求 FFmpeg、窗口或视频录制。
 

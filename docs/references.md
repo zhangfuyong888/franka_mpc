@@ -19,7 +19,9 @@ MIT历史 Mbed URL（任务给定）读取时重定向至 ArmMbed GitHub 主页�
 
 ## 版本状态
 
-固定依赖：Python3.10~3.12（优先3.11）、mujoco3.3.7、mink0.0.13、osqp1.0.4、qpsolvers4.8.1、numpy1.26.4、scipy1.15.2、PyYAML6.0.3、matplotlib3.10.7、pytest8.4.2。版本号固定在 pyproject，当前API和真实闭环已验证，干净环境完整传递依赖锁仍未验证。
+Python 声明范围为 3.10～3.12，教程推荐 3.10；Ubuntu 22.04 上的 3.10 / 3.11 已通过 GitHub Actions 在线安装、测试和干净环境 wheel 验证，3.12 尚未验证。
+固定依赖：mujoco 3.3.7、mink 0.0.13、osqp 1.0.4、qpsolvers 4.8.1、numpy 1.26.4、scipy 1.15.2、PyYAML 6.0.3、matplotlib 3.10.7、pytest 8.4.2。
+直接依赖固定在 `pyproject.toml`；Python 3.10 的传递依赖版本约束在 `requirements/constraints-py310-linux.txt`，并非带官方分发文件哈希的锁文件。实际验证范围见 [验证记录](validation.md)。
 
 最初离线验证环境（历史）：Python3.10.20、NumPy1.26.4、SciPy1.15.2、PyYAML6.0.3、Matplotlib3.7.5、pytest9.1.1、CasADi3.6.7，其动态链接 OSQP C0.6.3。初次验证时生产所需mujoco/mink/osqp Python未安装；当前均已补齐并完成真实测试，版本见 evidence/closed_loop/metadata.json。`environment_observed.txt` 是借用环境记录，非锁文件。
 

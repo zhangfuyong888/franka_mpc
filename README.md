@@ -1,11 +1,13 @@
 # Panda 机械臂 MPC 控制教程
 
+[![Tutorial verification](https://github.com/zhangfuyong888/franka_mpc/actions/workflows/tutorial.yml/badge.svg?branch=main)](https://github.com/zhangfuyong888/franka_mpc/actions/workflows/tutorial.yml)
+
 从单关节预测控制开始，逐步实现七轴 Panda 的末端目标跟踪、途中换目标和扰动恢复。
 使用 Python、MuJoCo、mink 和 OSQP，重点解释**模型怎样写、约束怎样加入、优化结果怎样变成真实运动**。
 
-[![斜侧视角的机械臂随机目标追踪演示](docs/media/demo-preview.jpg)](mpc跟踪控制.mp4)
+[![斜侧视角的机械臂随机目标追踪演示](docs/media/demo-preview.jpg)](docs/media/demo.mp4)
 
-[观看或下载 30 秒 MP4 演示](mpc跟踪控制.mp4)。GitHub 若未内嵌播放，可下载到本地观看。
+[观看或下载 30 秒 MP4 演示](docs/media/demo.mp4)。GitHub 若未内嵌播放，可下载到本地观看。
 演示为快速随机目标替换，不要求机械臂在每次切换前到达；它不是固定目标精度或实时性证明。
 
 ## 你会实现什么
@@ -29,9 +31,9 @@ flowchart LR
 
 ## 先跑通第一课
 
-主要验证基线是 Ubuntu 22.04、Python 3.10。代码声明支持 Python 3.10～3.12，
-GitHub 工作流配置了 3.10/3.11 安装与测试，但远端 CI 需要上传后实际执行。
-已完成本机离线隔离构建、依赖安装和测试；网络下载仍受工具限制，离线依赖来源及验证边界见 [验证范围](docs/validation.md)。
+推荐 Ubuntu 22.04、Python 3.10。GitHub Actions 已在 Python 3.10 和 3.11 上通过在线安装、
+自动测试，以及独立环境中的 wheel 安装和第一课运行；EGL 离屏渲染与视频测试也已通过。
+代码声明支持 Python 3.10～3.12，3.12 尚未验证。具体提交、结果与平台边界见 [验证记录](docs/validation.md)。
 
 ```bash
 git clone https://github.com/zhangfuyong888/franka_mpc.git
@@ -49,7 +51,8 @@ python -m panda_mpc.demo --config configs/tutorial/01_single_target.yaml --headl
 若创建环境时提示缺少 `ensurepip`，Ubuntu 可先安装 `python3.10-venv`。
 已有环境不要覆盖；也可使用 [安装脚本](scripts/install.sh)，如
 `PYTHON=python3.10 VENV_DIR=.venv-tutorial bash scripts/install.sh`，脚本拒绝覆盖已有目录。
-版本约束覆盖 Python 3.10 环境的依赖闭包。本机已用明确记录来源的离线依赖在独立 venv 中验证；其他 Python 版本可按 pyproject 安装并单独验证。
+版本约束覆盖 Python 3.10 环境的依赖闭包，已在 GitHub Actions 中验证在线安装。
+Python 3.11 可省略 `-c requirements/constraints-py310-linux.txt`，按 `pyproject.toml` 安装；约束文件不是带下载文件哈希的锁文件。
 
 **预期结果**：终端显示 `Final goal: reached`，位置误差小于 0.01 m；默认基线原有结果约 0.000859 m，
 数值受环境影响，不要求逐位相同。正常结束后自动保存六张图、`summary.json` 和易读的 `report.md`。
@@ -97,7 +100,7 @@ python -m panda_mpc.analyze --run-dir outputs/candidate --against outputs/baseli
 <details>
 <summary>查看示例：误差、耗时与参考回退</summary>
 
-![随机快速切换的末端误差、控制耗时和参考回退截图](误差.png)
+![随机快速切换的末端误差、控制耗时和参考回退截图](docs/media/error-timing.png)
 
 误差的竖直变化常来自目标替换；alpha 是参考候选的回退比例，不是新旧目标权重。
 `braking` 表示显式制动，和 alpha 不是同一个状态。
@@ -107,7 +110,7 @@ python -m panda_mpc.analyze --run-dir outputs/candidate --against outputs/baseli
 <details>
 <summary>查看示例：加速度与关节力矩</summary>
 
-![MPC 理想输入、参考加速度、实测差分与关节力矩截图](加速度-力矩.png)
+![MPC 理想输入、参考加速度、实测差分与关节力矩截图](docs/media/acceleration-torque.png)
 
 理想加速度、下发参考及实测速度差分是不同的量；力矩图用来检查前馈、反馈及总限幅。
 这些是仓库提供的展示素材，准确实验参数应查对应运行的解析配置，不从截图推断。
@@ -152,6 +155,18 @@ MUJOCO_GL=egl python -m pytest -q -W error -m video
 输出目录必须不存在，防止覆盖实验。随机任务的正式参数对照建议用 `--events` 固定事件表；
 固定 seed 不保证跨机器的 IK 墙钟预算和数值结果完全一致。
 
+## GitHub Actions 自动检查什么
+
+每次推送代码或提交 Pull Request，[自动验证工作流](.github/workflows/tutorial.yml) 都会在 GitHub 的临时 Ubuntu 环境运行：
+
+- **Python 3.10 / 3.11**：安装依赖、检查环境和文档链接、运行非视频测试；再新建独立环境，构建和安装 wheel，运行测试及第一课。
+- **视频路径**：检查 EGL 离屏渲染，并运行视频测试。
+- **保存证据**：上传独立安装的日志、验证记录和第一课输出，供排查与复现。
+
+在仓库的 [Actions 页面](https://github.com/zhangfuyong888/franka_mpc/actions) 查看结果，绿色勾表示该次检查通过。
+打开某次运行，可查看失败步骤的日志，并在 Artifacts 下载 `lesson-results-py3.10` / `lesson-results-py3.11`。
+也可选择 `Tutorial verification` → `Run workflow` 手动检查。它用于验证提交能否安装和运行，不会部署项目。
+
 本项目是仿真教程，未提供硬实时、全局避障或真机安全保证。
 [第三方声明](THIRD_PARTY_NOTICES.md) 保留模型和库的来源及许可，项目原创源码与文档采用 [MIT](LICENSE)，第三方模型与网格继续遵守其 Apache-2.0 许可。
-[验证文档](docs/validation.md) 明确列出已运行结果、当前阻塞和历史证据。
+[验证文档](docs/validation.md) 明确列出已运行结果、验证边界和历史证据。

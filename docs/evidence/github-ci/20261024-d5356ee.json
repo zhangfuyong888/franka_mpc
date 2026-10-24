@@ -1,0 +1,188 @@
+{
+  "checked_on": "2026-10-24",
+  "repository": "zhangfuyong888/franka_mpc",
+  "commit": "d5356ee73d22a7386486311102f2ac16697b93e4",
+  "workflow": "Tutorial verification",
+  "run_id": 40077821017,
+  "url": "https://github.com/zhangfuyong888/franka_mpc/actions/runs/40077821017",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "headless (3.11)",
+      "id": 120824904190,
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install pinned Python 3.10 environment",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Check Python 3.11 compatibility",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m panda_mpc.doctor",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python scripts/check_docs.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q -W error -m 'not video'",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build and verify wheel in a second clean environment",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "video",
+      "id": 120824904405,
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run sudo apt-get update && sudo apt-get install -y libegl1 libgl1 libgl1-mesa-dri",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -c requirements/constraints-py310-linux.txt -e '.[test,video]'",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run MUJOCO_GL=egl python -m panda_mpc.doctor --video --render",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q -W error -m video",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "headless (3.10)",
+      "id": 120824904427,
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install pinned Python 3.10 environment",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check Python 3.11 compatibility",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run python -m pip check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m panda_mpc.doctor",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python scripts/check_docs.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q -W error -m 'not video'",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build and verify wheel in a second clean environment",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}
