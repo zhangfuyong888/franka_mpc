@@ -5,7 +5,7 @@
 从单关节预测控制开始，逐步实现七轴 Panda 的末端目标跟踪、途中换目标和扰动恢复。
 使用 Python、MuJoCo、mink 和 OSQP，重点解释**模型怎样写、约束怎样加入、优化结果怎样变成真实运动**。
 
-[![斜侧视角的机械臂随机目标追踪演示](docs/media/demo-preview.jpg)](docs/media/demo.mp4)
+[![斜侧视角的机械臂随机目标追踪动图](docs/media/simulation.gif)](docs/media/demo.mp4)
 
 [观看或下载 30 秒 MP4 演示](docs/media/demo.mp4)。GitHub 若未内嵌播放，可下载到本地观看。
 演示为快速随机目标替换，不要求机械臂在每次切换前到达；它不是固定目标精度或实时性证明。
