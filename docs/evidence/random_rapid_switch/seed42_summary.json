@@ -1,0 +1,255 @@
+{
+  "execution_completed": true,
+  "fixed_goal_acceptance": null,
+  "duration_s": 10.000000000000009,
+  "wall_seconds": 4.507115023000097,
+  "simulation_wall_ratio": 2.2187141772440615,
+  "final_error_m": 0.2343029197885163,
+  "max_error_m": 0.47397745282303644,
+  "max_ee_speed_m_s": 0.7234750830232176,
+  "joint_speed_peaks_rad_s": [
+    0.6389184904223711,
+    0.6990696350452764,
+    0.688539519566671,
+    0.6959370878983066,
+    0.8972261547978433,
+    0.897929332165481,
+    0.5198440117779957
+  ],
+  "joint_torque_peaks_Nm": [
+    6.313876181479176,
+    40.13255185072455,
+    8.864947121732277,
+    26.82377146750562,
+    2.135711213222175,
+    3.9271734757341084,
+    0.6870424247414894
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 20,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.0,
+  "qp_timing": {
+    "p50_ms": 0.678850499980399,
+    "p95_ms": 6.572225450065616,
+    "max_ms": 10.370957000077397,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.6351945000205887,
+    "p95_ms": 10.512139550132812,
+    "max_ms": 23.620549000042956,
+    "over_budget": 2
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06878899989715137,
+    "p95_ms": 0.08616465009936292,
+    "max_ms": 0.1099899998280307,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 0,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.0,
+      "activated_at": 0.0,
+      "activation_delay": 0.0,
+      "first_command_at": 0.0,
+      "final_error_m": 7.216450632905188e-16,
+      "max_error_m": 8.082545875167785e-16
+    },
+    {
+      "goal_id": 1,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.2,
+      "activated_at": 0.20000000000000015,
+      "activation_delay": 1.3877787807814457e-16,
+      "first_command_at": 0.20000000000000015,
+      "final_error_m": 0.17054351923062852,
+      "max_error_m": 0.39875049541271507
+    },
+    {
+      "goal_id": 2,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.7804944679711054,
+      "activated_at": 0.8000000000000006,
+      "activation_delay": 0.019505532028895156,
+      "first_command_at": 0.8000000000000006,
+      "final_error_m": 0.31261306403335853,
+      "max_error_m": 0.34908853701469883
+    },
+    {
+      "goal_id": 3,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 1.1083638058403178,
+      "activated_at": 1.1200000000000008,
+      "activation_delay": 0.011636194159682978,
+      "first_command_at": 1.1200000000000008,
+      "final_error_m": 0.0701667726094705,
+      "max_error_m": 0.31736284102799933
+    },
+    {
+      "goal_id": 4,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 1.765669811598,
+      "activated_at": 1.7800000000000014,
+      "activation_delay": 0.014330188402001287,
+      "first_command_at": 1.7800000000000014,
+      "final_error_m": 0.19866659694500885,
+      "max_error_m": 0.2807228939113071
+    },
+    {
+      "goal_id": 5,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 2.1300349622924823,
+      "activated_at": 2.139999999999986,
+      "activation_delay": 0.009965037707503566,
+      "first_command_at": 2.139999999999986,
+      "final_error_m": 0.039932714469676896,
+      "max_error_m": 0.315284168093814
+    },
+    {
+      "goal_id": 6,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 3.014972853244223,
+      "activated_at": 3.019999999999889,
+      "activation_delay": 0.005027146755665957,
+      "first_command_at": 3.019999999999889,
+      "final_error_m": 0.058953414433006564,
+      "max_error_m": 0.19394561780065178
+    },
+    {
+      "goal_id": 7,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 3.5944660314875674,
+      "activated_at": 3.599999999999825,
+      "activation_delay": 0.0055339685122577364,
+      "first_command_at": 3.599999999999825,
+      "final_error_m": 0.07334986056261285,
+      "max_error_m": 0.38365553595730895
+    },
+    {
+      "goal_id": 8,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 4.395499568309001,
+      "activated_at": 4.3999999999997375,
+      "activation_delay": 0.0045004316907366615,
+      "first_command_at": 4.3999999999997375,
+      "final_error_m": 0.25827186778731565,
+      "max_error_m": 0.3684417270682242
+    },
+    {
+      "goal_id": 9,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 4.745323721443572,
+      "activated_at": 4.759999999999698,
+      "activation_delay": 0.01467627855612541,
+      "first_command_at": 4.759999999999698,
+      "final_error_m": 0.15012792799991484,
+      "max_error_m": 0.29517605855531354
+    },
+    {
+      "goal_id": 10,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 5.420554319337198,
+      "activated_at": 5.439999999999623,
+      "activation_delay": 0.019445680662425247,
+      "first_command_at": 5.439999999999623,
+      "final_error_m": 0.2486197571189359,
+      "max_error_m": 0.2602418754242217
+    },
+    {
+      "goal_id": 11,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 5.82732503543114,
+      "activated_at": 5.839999999999579,
+      "activation_delay": 0.012674964568438973,
+      "first_command_at": 5.839999999999579,
+      "final_error_m": 0.0309137633349293,
+      "max_error_m": 0.09980816748159926
+    },
+    {
+      "goal_id": 12,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 6.411528977454612,
+      "activated_at": 6.419999999999515,
+      "activation_delay": 0.00847102254490295,
+      "first_command_at": 6.419999999999515,
+      "final_error_m": 0.13148160763525307,
+      "max_error_m": 0.27982190293041376
+    },
+    {
+      "goal_id": 13,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 6.9257899127465326,
+      "activated_at": 6.939999999999458,
+      "activation_delay": 0.014210087252925163,
+      "first_command_at": 6.939999999999458,
+      "final_error_m": 0.11224202239912312,
+      "max_error_m": 0.2781676626115725
+    },
+    {
+      "goal_id": 14,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 7.412121326462783,
+      "activated_at": 7.419999999999405,
+      "activation_delay": 0.00787867353662186,
+      "first_command_at": 7.419999999999405,
+      "final_error_m": 0.12978804833840127,
+      "max_error_m": 0.47397745282303644
+    },
+    {
+      "goal_id": 15,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 8.161102485370622,
+      "activated_at": 8.179999999999401,
+      "activation_delay": 0.018897514628779533,
+      "first_command_at": 8.179999999999401,
+      "final_error_m": 0.18069425384419502,
+      "max_error_m": 0.2499844257000432
+    },
+    {
+      "goal_id": 16,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 8.466622395871374,
+      "activated_at": 8.479999999999501,
+      "activation_delay": 0.013377604128127274,
+      "first_command_at": 8.479999999999501,
+      "final_error_m": 0.08513271315107411,
+      "max_error_m": 0.4451277693833977
+    },
+    {
+      "goal_id": 17,
+      "status": "active",
+      "reached_at": null,
+      "scheduled_time": 9.280271474198633,
+      "activated_at": 9.299999999999775,
+      "activation_delay": 0.019728525801141927,
+      "first_command_at": 9.299999999999775,
+      "final_error_m": 0.2343029197885163,
+      "max_error_m": 0.3569799805578845
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable"
+}

@@ -187,15 +187,22 @@ x_0=[q_{measured};v_{measured}],\qquad x_{k+1}=Ax_k+Ba_k,
 $$
 
 $$
-q_{min}\le q_k\le q_{max},\quad -v_{max}\le v_k\le v_{max}
+q_{min}\le q_k\le q_{max},\quad -v_{plan}\le v_k\le v_{plan}
 \quad(k=1,\ldots,N),
 $$
 
 $$
--a_{max}\le a_k\le a_{max}\quad(k=0,\ldots,N-1).
+-a_{plan}\le a_k\le a_{plan}\quad(k=0,\ldots,N-1).
 $$
 
 位置界来自模型关节范围两侧各缩进 0.08 rad；速度界为前四轴 0.7、后三轴 0.9 rad/s；加速度界为前四轴 2、后三轴 3 rad/s²。实测状态在调用求解器前还会检查操作位置与速度界，只容许 $10^{-10}$ 的浮点舍入误差，实际值原样进入初值等式。若把超界测量裁剪到界内，就等于让优化器从不存在的状态规划，不能因此宣称可行。
+
+当前默认 `mpc_motion_margin=0.001`，优化器内部采用
+$v_{plan}=(1-m)v_{max}$、$a_{plan}=(1-m)a_{max}$，即速度和加速度各留 0.1% 裕量；
+位置操作界保持不变。这样可避免数值上略超边界的解立即触发下一周期拒绝或参考回退。
+这不是裁剪测量或放宽真实限制：求解后还会独立检查所有未来 q/v/a 没有超出原操作界，
+只容许 $10^{-10}$ 舍入误差。超出时标记 `solution_rejected:operating_bounds`。
+裕量不保证任何状态都可行，也不保证真实跟踪不会超界或完全没有参考回退。
 
 代价中的加速度差惩罚只鼓励平滑。**jerk** 是加速度的变化率；这里没有硬约束 $|(a_k-a_{k-1})/T|\le j_{max}$，也没有力矩约束、碰撞约束、松弛变量或保证递归可行的终端集合。力矩在 MIT 执行层最后限幅；预测接触在求解后另行检查。即使当前 q/v 在界内，也可能因为刹车距离不足而无可行解。
 
@@ -269,6 +276,7 @@ l[:self.nx] = u[:self.nx] = np.r_[q, dq]
 | 求解状态 | 求解器认为成功、精度不足、不可行还是迭代耗尽 | 只考虑状态 1 `solved`、2 `solved inaccurate` |
 | 原始残差 | 约束相关变量是否足够一致 | `prim_res <= 0.001` |
 | 对偶残差 | 当前点离一阶最优性条件还有多远 | `dual_res <= 0.001` |
+| 原操作界复核 | 检查未来 q/v/a 是否真的超出对外限制 | `operating_violation <= 1e-10` |
 | 应用层约束违反 | 直接重算 $Gz$，最多越出 $[l,u]$ 多少 | `violation <= 0.001`，同时要求解全部有限 |
 | 不等式 margin | 未来状态和输入距最近上下界的余量 | 记录供分析，不另设接受阈值 |
 
@@ -276,7 +284,7 @@ l[:self.nx] = u[:self.nx] = np.r_[q, dq]
 
 ### 3.7 实际核算的单关节、两步例子
 
-以下是**教学简化**：改成单关节，$N=2,T=1$ s，初始 $q_0=v_0=0$，目标 $q_g=1$ rad，上一加速度为 0。为了看清数字，时间步比项目默认大；其余代价权重与上表一致。位置界取 $\pm10$ rad、速度界取 $\pm10$ rad/s，不代表真实 Panda 参数。
+以下是**教学简化**：改成单关节，$N=2,T=1$ s，初始 $q_0=v_0=0$，目标 $q_g=1$ rad，上一加速度为 0。为了看清数字，时间步比项目默认大；其余代价权重与上表一致。本例为展示原始约束数学，显式设 `mpc_motion_margin=0`；正常闭环仍使用默认裕量。位置界取 $\pm10$ rad、速度界取 $\pm10$ rad/s，不代表真实 Panda 参数。
 
 由同一个预测模型直接得到
 
@@ -311,7 +319,7 @@ import numpy as np
 from panda_mpc.config import load_config
 from panda_mpc.mpc import LinearMPC
 
-c = load_config(horizon=2, period=1.0)
+c = load_config(horizon=2, period=1.0, mpc_motion_margin=0.0)
 for bound in (10.0, 0.5):
     mpc = LinearMPC(np.array([-10.]), np.array([10.]),
                     np.array([10.]), np.array([bound]), c)

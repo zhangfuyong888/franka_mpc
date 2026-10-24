@@ -1,0 +1,10 @@
+WARNING: The directory '/home/zfy/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing /home/zfy/franka_mpc_tracking/panda-mpc-tracking
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: panda-mpc-tracking
+  Building wheel for panda-mpc-tracking (pyproject.toml): started
+  Building wheel for panda-mpc-tracking (pyproject.toml): finished with status 'done'
+  Created wheel for panda-mpc-tracking: filename=panda_mpc_tracking-0.1.0-py3-none-any.whl size=5103534 sha256=7d524817ec7d9f7c391e3411259ee3147df1b031c78406c3cbacdcc1c21d8a67
+  Stored in directory: /tmp/pip-ephem-wheel-cache-qnkyq6c9/wheels/ca/ee/36/8234b4285c80f2356fe1da20c99bf0370191f91f3d9ef0624f
+Successfully built panda-mpc-tracking

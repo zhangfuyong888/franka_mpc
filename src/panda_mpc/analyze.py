@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import yaml
 from .telemetry import write_json
+from .diagnostics import rejection_counts, write_report
 
 
 def timing(values, budget):
@@ -62,13 +63,17 @@ def analyze(run_dir, compare=None):
             'max_error_m': float(err[selected].max()) if selected.any() else None})
     sim_seconds = float(t[-1]+c['dt'])
     summary = {
+        'schema_version': 2,
         'execution_completed': execution['error'] is None and not execution['stopped'],
+        'requested_duration_s': c['duration'],
+        'duration_completed': bool(sim_seconds+1e-8 >= np.floor(c['duration']/c['dt']+1e-9)*c['dt']),
         'fixed_goal_acceptance': (bool(target_results) and target_results[-1]['status'] == 'reached'
                 and err[-1] < c['reach_error'] and speed[-1] < c['reach_speed'])
                 if c['scenario'] in ('hold', 'single_target', 'disturbance') else None,
         'duration_s': sim_seconds, 'wall_seconds': execution['wall_seconds'],
         'simulation_wall_ratio': sim_seconds/execution['wall_seconds'],
-        'final_error_m': float(err[-1]), 'max_error_m': float(err.max()),
+        'final_error_m': float(err[-1]),
+        'max_error_m': float(np.max(err[np.isfinite(err)])) if np.isfinite(err).any() else None,
         'max_ee_speed_m_s': float(speed.max()),
         'joint_speed_peaks_rad_s': np.max(np.abs(d['dq']), axis=0),
         'joint_torque_peaks_Nm': np.max(np.abs(d['tau_applied']), axis=0),
@@ -85,6 +90,7 @@ def analyze(run_dir, compare=None):
         'inner_step_timing': timing(d['inner_elapsed'], c['dt']),
         'targets': target_results,
         'actual_acceleration_source': 'backward difference of measured qvel, first sample unavailable',
+        **rejection_counts(ticks),
     }
     dist = events['disturbance']
     if dist.get('enabled'):
@@ -171,15 +177,27 @@ def analyze(run_dir, compare=None):
         ax.set(xlabel='time [s]', ylabel='distance [m]'); ax.legend(); save(fig, 'disturbance_comparison.png')
         cd.close()
     write_json(path/'summary.json', summary)
+    write_report(path, summary)
     return summary
 
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--run-dir', required=True)
-    p.add_argument('--compare', help='Undisturbed control run directory')
+    comparison = p.add_mutually_exclusive_group()
+    comparison.add_argument('--compare', help='Undisturbed control run directory')
+    comparison.add_argument('--against', help='Same-task baseline run for a control-parameter comparison')
+    p.add_argument('--at', type=float, help='Inspect a simulation time in seconds')
+    p.add_argument('--joint', type=int, choices=range(1, 8), default=1)
+    p.add_argument('--window', type=float, default=.3, help='Inspection half-window in seconds')
     a = p.parse_args()
     summary = analyze(a.run_dir, a.compare)
+    if a.at is not None:
+        from .diagnostics import inspect_run
+        summary['inspection'] = inspect_run(a.run_dir, a.at, a.joint, a.window)
+    if a.against:
+        from .diagnostics import compare_runs
+        summary['parameter_comparison'] = compare_runs(a.run_dir, a.against)
     print(json.dumps(summary, default=lambda x: x.tolist(), ensure_ascii=False, indent=2))
 
 

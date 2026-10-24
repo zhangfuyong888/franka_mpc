@@ -1,0 +1,76 @@
+{
+  "schema_version": 2,
+  "execution_completed": true,
+  "requested_duration_s": 10.0,
+  "duration_completed": true,
+  "fixed_goal_acceptance": true,
+  "duration_s": 10.000000000000009,
+  "wall_seconds": 3.686617768002179,
+  "simulation_wall_ratio": 2.712513373855713,
+  "final_error_m": 6.415561877037883e-15,
+  "max_error_m": 1.7834550350891262e-14,
+  "max_ee_speed_m_s": 8.083882826069422e-14,
+  "joint_speed_peaks_rad_s": [
+    1.3801320385001986e-16,
+    5.487647258754976e-14,
+    3.578850165807415e-16,
+    1.7858337974033618e-13,
+    1.4082030283570368e-15,
+    8.817791421600933e-14,
+    4.8500021326638294e-14
+  ],
+  "joint_torque_peaks_Nm": [
+    8.176256297982398e-14,
+    8.451319084620925,
+    0.5142503852038007,
+    20.94646696989481,
+    0.6246235554118973,
+    2.437001589361446,
+    0.003191145780121545
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 0,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.0,
+  "qp_timing": {
+    "p50_ms": 0.48338150008930825,
+    "p95_ms": 0.5712950998713491,
+    "max_ms": 1.1693159976857714,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.452464499787311,
+    "p95_ms": 3.913748753075195,
+    "max_ms": 5.802904997835867,
+    "over_budget": 0
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06447349915106315,
+    "p95_ms": 0.08379624960070942,
+    "max_ms": 0.32428899794467725,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 0,
+      "status": "reached",
+      "reached_at": 0.20000000000000015,
+      "scheduled_time": 0.0,
+      "activated_at": 0.0,
+      "activation_delay": 0.0,
+      "first_command_at": 0.0,
+      "final_error_m": 6.415561877037883e-15,
+      "max_error_m": 1.7834550350891262e-14
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable",
+  "mpc_input_rejections": 0,
+  "qp_solver_failures": 0,
+  "qp_solution_rejections": 0,
+  "predicted_contact_rejections": 0,
+  "mpc_rejections": 0
+}

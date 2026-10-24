@@ -18,6 +18,8 @@ delta_a_weight: 0.3
 terminal_scale: 4.0
 qp_tolerance: 0.00001
 qp_acceptance: 0.001
+# 速度/加速度优化界收紧比例；对外限制和实测初值不变，留出数值与执行余量。
+mpc_motion_margin: 0.001
 ik_tolerance: 0.002
 ik_iterations: 150
 ik_budget: 1.0
@@ -33,6 +35,20 @@ saturation_stop: 0.5
 contact_penetration: 0.001
 random_box: [[0.35, -0.20, 0.40], [0.55, 0.20, 0.65]]
 random_interval: [2.0, 4.0]
+# 快速抢占：世界坐标 xyz 范围（m），及相邻目标的随机切换间隔（仿真秒）。
+rapid_switch_box: [[0.25, -0.35, 0.30], [0.65, 0.35, 0.75]]
+rapid_switch_interval: [0.3, 0.9]
+# 可选 MP4 录制；普通 headless 且关闭录制时不创建渲染器。
+record_video: false
+video_webm: false
+video_fps: 30
+video_width: 1280
+video_height: 720
+# 窗口初始视角与视频固定视角；lookat 单位 m，角度单位为度。
+camera_lookat: [0.2, 0.0, 0.5]
+camera_distance: 2.5
+camera_azimuth: 135.0
+camera_elevation: -25.0
 disturbance_enabled: true
 # World generalized torque; not provided to IK, MPC, feedforward or MIT.
 disturbance: {start: 4.0, duration: 0.25, torque: [0, 6, 0, 0, 0, 0, 0]}

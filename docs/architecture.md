@@ -18,8 +18,10 @@
 | [mit.MITAdapter.apply](../src/panda_mpc/mit.py) | `JointCommand`、实测状态 → 合成并限幅的力矩 | 唯一的控制 `ctrl` 写入点 |
 | [sim.Simulation](../src/panda_mpc/sim.py)、[robot.Robot](../src/panda_mpc/robot.py) | 力矩 → 下一物理状态；候选 q → FK/接触查询 | 推进物理、按名称索引关节、隔离计算查询 |
 | [monitor.Monitor](../src/panda_mpc/monitor.py)、[disturbances.Disturbance](../src/panda_mpc/disturbances.py) | 实测状态/执行结果；实验计划 → 事件或外力 | 监测异常、注入并清除物理外力 |
+| [diagnostics](../src/panda_mpc/diagnostics.py)、[doctor](../src/panda_mpc/doctor.py) | 实验文件或环境 → 报告、时间定位、参数对照、自检结果 | 离线教学诊断与安装自检，不参与控制 |
 | [telemetry.Telemetry](../src/panda_mpc/telemetry.py)、[analyze.analyze](../src/panda_mpc/analyze.py) | 状态/命令/事件 → 数据、摘要与图片 | 保存事实、离线评估 |
 | [visualizer.Visualizer](../src/panda_mpc/visualizer.py) | 实测末端、目标、预测 FK → 窗口 | 约每 40 ms 仿真时间刷新，关闭窗口可结束循环 |
+| [video.VideoRecorder](../src/panda_mpc/video.py)、[rendering.SceneOverlay](../src/panda_mpc/rendering.py) | 步前状态、相机、目标与轨迹 → MP4 帧 | 可选离屏渲染、共享轨迹装饰、按仿真时间流式编码 |
 
 跨层数据定义在 [types.py](../src/panda_mpc/types.py)：`RobotState` 是测量快照，`GoalRecord` 保存生命周期，`MPCResult` 保存预测与求解质量，`JointCommand` 包含位置/速度参考、增益、前馈、时间戳和有效期。量的维度与单位统一见控制数学的符号表。
 
@@ -30,6 +32,11 @@
 `runner.run()` 首先创建一个新的输出目录并保存配置和环境信息。随后初始化 MuJoCo 模型，在 `home` 关键帧设置一次物理状态，创建 IK、MPC、名义动力学、MIT、目标管理器、监测器及参考生成器。参考第一次从实际位置/速度开始。
 
 随机场景在循环前生成目标表：位置与时间使用独立随机数流，从工作空间盒内抽样，并从 home 做局部 IK 预筛。运行时只有到期目标进入控制器；目标真正激活时，仍会从当时的实测构型重新求 IK。预筛通过不保证从任意后续 seed 都求解成功，也不是未来轨迹预瞄。普通目标表和记录的 `events.json` 均可用于回放。
+
+`random` 使用 `random_box/random_interval`；`rapid_switch` 使用独立的
+`rapid_switch_box/rapid_switch_interval`，默认空间更大、间隔更短。两者都从 0.2 s
+开始逐个累加随机间隔；与是否到达无关。每个目标最多抽样 100 次，未能找到通过预筛的
+位置则明确报错。`events.json` 的 sampling 记录本次空间范围、间隔范围、接受数与拒采原因。
 
 模型来自随包的 [Panda 资产](../src/panda_mpc/assets/panda/README.md)，保留惯量和几何，固定双指，使用七个直接力矩电机；`nq=nv=nu=7`。`robot.load_model()` 核对电机语义，`Robot` 核对关节地址、传动顺序及留有裕量的操作边界。派生方法在 [prepare_model.py](../scripts/prepare_model.py)，来源与许可见 [第三方声明](../THIRD_PARTY_NOTICES.md)。
 
@@ -102,6 +109,28 @@ mink 的 `Configuration` 拥有独立计算数据，用于虚拟 IK 迭代；`Ro
 
 ## 数据、评估和窗口各做什么
 
-`Telemetry` 每 2 ms 保存实际/参考/力矩，每 20 ms 保存 QP、IK、参考系数和耗时，另保存目标及监测事件。循环结束或捕获异常后在 `finally` 中落盘；`analyze` 随后读取数据，用无窗口绘图库生成摘要和图。没有物理数据时只报告失败，不画虚构轨迹。
+`Telemetry` 每 2 ms 保存实际/参考/力矩，每 20 ms 保存 QP、IK、参考系数和耗时，另保存目标及监测事件。循环结束或捕获异常后在 `finally` 中落盘；`analyze` 随后读取数据，用无窗口绘图库生成摘要和图，并由 `diagnostics` 写出易读的 `report.md`。没有物理数据时只报告失败，不画虚构轨迹。
 
-可视化显示红色目标、绿色实际末端历史与蓝色预测关节点的 FK 位置，只负责展示和适当墙钟节奏控制，不参与优化。`--headless` 不导入 viewer。耗时字段的统计范围和实验判据见 [validation.md](validation.md)。
+可视化显示红色目标、绿色实际末端历史与蓝色预测关节点的 FK 位置。实际轨迹按目标编号分段，
+只保留最近 4 条已结束的历史轨迹（较淡绿色），另显示当前轨迹；更早的轨迹自动移出窗口，
+日志仍保留完整数据。可视化只负责展示和适当墙钟节奏控制，不参与优化。`--headless` 不导入 viewer。
+耗时字段的统计范围和实验判据见 [validation.md](validation.md)。
+
+开启 `record_video` 后，循环在保存步前日志后、`step2` 前调用 `VideoRecorder.capture`，
+以同一物理时刻的几何数据渲染。整数帧号除以 FPS 决定下一帧时间，不使用墙钟定时；
+RGB 帧通过管道交给独立 FFmpeg 进程编码 H.264/yuv420p MP4，不把整段视频存入内存。
+启用 `video_webm` 时结束后额外转为 VP9 WebM，方便缺少 H.264 插件的播放器观看。录制与窗口共用 `SceneOverlay` 的四段历史及当前轨迹，
+但使用独立相机，窗口拖动不改变视频构图。结束时 `finally` 关闭编码器和渲染器，再保存实验文件。
+普通不录制的 headless 路径不导入视频库或创建 Renderer。录制开关与命令见 [README](../README.md)。
+
+## 教学与复现入口
+
+`runner._activate_latest_goal()` 集中处理最新目标激活和 IK 结果，主循环继续明确协调
+慢环规划与快环执行；没有新增隐藏的状态更新或替换控制模型。失败结果新增 `failure_kind`，
+仅用于诊断分类，旧的求解接受条件保留。
+
+`metadata.json` 从 schema_version=2 开始保存 Git 提交号和 dirty 标志；`summary.json`
+增加运行满时长标志及 MPC 拒绝分类。历史字段仍保留，诊断模块能从旧 status 推断原因。
+
+入门配置位于 `configs/tutorial/`，不依赖录制；原演示配置仍在 `configs/rapid_switch.yaml`。
+`doctor` 只做环境检查，可选渲染检查在子进程进行。可运行实验与练习见 [实验路线](lessons.md)。

@@ -1,0 +1,8 @@
+# 进阶实验：复现半速大范围随机快速切换；不依赖录制或视频编码器。
+scenario: rapid_switch
+duration: 30.0
+seed: 42
+velocity: [0.35, 0.35, 0.35, 0.35, 0.45, 0.45, 0.45]
+rapid_switch_box: [[0.25, -0.35, 0.30], [0.65, 0.35, 0.75]]
+rapid_switch_interval: [0.3, 0.9]
+record_video: false

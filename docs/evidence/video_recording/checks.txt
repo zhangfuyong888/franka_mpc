@@ -1,0 +1,9 @@
+Date: 2026-10-24
+Command: MUJOCO_GL=egl .venv/bin/python -m panda_mpc.demo --config configs/rapid_switch.yaml --duration 30 --headless
+Exit code: 0
+Video: outputs/20261024-111544-525680-rapid_switch/simulation.mp4
+OpenCV VideoCapture: all 900 frames decoded; 1280x720, 30 FPS, playback 30 s
+Manual view: frames 0, 450, 899 show full arm and base inside fixed oblique view
+Tests: .venv/bin/python -m pytest -q -W error -> 40 passed in 51.84s
+Video/control integration test: exact t, q, dq, goal_id, tau_applied arrays; 0.4 s video, 10 frames at 25 FPS
+GUI window: not tested in tool environment

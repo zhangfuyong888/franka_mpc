@@ -1,0 +1,52 @@
+name: Tutorial verification
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  headless:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements/constraints-py310-linux.txt
+      - name: Install pinned Python 3.10 environment
+        if: matrix.python == '3.10'
+        run: python -m pip install -c requirements/constraints-py310-linux.txt -e '.[test]'
+      - name: Check Python 3.11 compatibility
+        if: matrix.python != '3.10'
+        run: python -m pip install -e '.[test]'
+      - run: python -m pip check
+      - run: python -m panda_mpc.doctor
+      - run: python scripts/check_docs.py
+      - run: python -m pytest -q -W error -m 'not video'
+      - name: Build and verify wheel in a second clean environment
+        run: python scripts/verify_install.py --output outputs/ci-clean
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lesson-results-py${{ matrix.python }}
+          path: |
+            outputs/ci-clean/*.log
+            outputs/ci-clean/verification.json
+            outputs/ci-clean/first-lesson/
+          if-no-files-found: ignore
+  video:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: sudo apt-get update && sudo apt-get install -y libegl1 libgl1 libgl1-mesa-dri
+      - run: python -m pip install -c requirements/constraints-py310-linux.txt -e '.[test,video]'
+      - run: MUJOCO_GL=egl python -m panda_mpc.doctor --video --render
+      - run: python -m pytest -q -W error -m video

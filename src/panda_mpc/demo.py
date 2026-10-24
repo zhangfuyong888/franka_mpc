@@ -18,8 +18,11 @@ def main():
     p.add_argument('--events', help='Replay events.json or a JSON event list')
     p.add_argument('--feedforward', choices=['none', 'gravity', 'inverse_dynamics'])
     p.add_argument('--no-disturbance', action='store_true', help='Paired disturbance scenario with injection disabled')
+    p.add_argument('--record-video', action=argparse.BooleanOptionalAction, default=None,
+                   help='Record simulation.mp4 in the run directory; --no-record-video disables recording')
     a = p.parse_args()
-    c = load_config(a.config, scenario=a.scenario, duration=a.duration, seed=a.seed, feedforward=a.feedforward)
+    c = load_config(a.config, scenario=a.scenario, duration=a.duration, seed=a.seed,
+                    feedforward=a.feedforward, record_video=a.record_video)
     if a.no_disturbance:
         c['disturbance_enabled'] = False
     output = a.output or f"outputs/{datetime.now():%Y%m%d-%H%M%S-%f}-{c['scenario']}"
@@ -31,10 +34,18 @@ def main():
             last = summary.get('targets', [])
             status = last[-1]['status'] if last else 'none'
             print(f"Final goal: {status}; EE error: {summary['final_error_m']:.6f} m; "
-                  f"QP failures: {summary['qp_failures']}; saturated steps: {summary['saturated_steps']}")
+                  f"MPC rejected: {summary['mpc_rejections']} "
+                  f"(input={summary['mpc_input_rejections']}, solver={summary['qp_solver_failures']}, "
+                  f"solution={summary['qp_solution_rejections']}); saturated steps: {summary['saturated_steps']}")
         if summary.get('fixed_goal_acceptance') is False:
             print('Target did not satisfy the configured position/speed/dwell criteria; see summary.json.')
     print(f'Artifacts: {output}; exit code: {code}')
+    if (Path(output)/'report.md').exists():
+        print(f'Report: {Path(output)/"report.md"}')
+    if (Path(output)/'simulation.mp4').exists():
+        print(f'Video: {Path(output)/"simulation.mp4"}')
+    if (Path(output)/'simulation.webm').exists():
+        print(f'Video (Ubuntu fallback): {Path(output)/"simulation.webm"}')
     return code
 
 

@@ -1,0 +1,13 @@
+{
+  "tick": 149,
+  "t": 2.98,
+  "status": "measured_state_outside_operating_bounds",
+  "q": [
+    0.03773196630864431
+  ],
+  "velocity": [
+    -0.7000006876191325
+  ],
+  "failure_kind": "input_rejected",
+  "note": "Measured/ideal state is preserved; no clipping to fake feasibility"
+}

@@ -1,0 +1,197 @@
+{
+  "schema_version": 2,
+  "execution_completed": true,
+  "requested_duration_s": 30.0,
+  "duration_completed": true,
+  "fixed_goal_acceptance": null,
+  "duration_s": 29.99999999999425,
+  "wall_seconds": 9.832465881001553,
+  "simulation_wall_ratio": 3.0511166133778027,
+  "final_error_m": 0.010111156440864123,
+  "max_error_m": 0.23926397476926736,
+  "max_ee_speed_m_s": 0.41213400342105694,
+  "joint_speed_peaks_rad_s": [
+    0.30257427676902005,
+    0.5696643743138882,
+    0.4463201722103656,
+    0.439911491975287,
+    0.6758344062344774,
+    0.7266594828956383,
+    0.27459401479149476
+  ],
+  "joint_torque_peaks_Nm": [
+    5.096110584118872,
+    31.387143487922767,
+    8.462494479965107,
+    26.686574045472362,
+    1.738211773768676,
+    3.5704155043635875,
+    0.3564828240830578
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 0,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.0,
+  "qp_timing": {
+    "p50_ms": 0.4658605012082262,
+    "p95_ms": 0.5069326491138781,
+    "max_ms": 0.972805999481352,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.4127574999729404,
+    "p95_ms": 3.604596000695892,
+    "max_ms": 13.044514998910017,
+    "over_budget": 0
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06630400093854405,
+    "p95_ms": 0.0808092507213587,
+    "max_ms": 0.25722200007294305,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 0,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.0,
+      "activated_at": 0.0,
+      "activation_delay": 0.0,
+      "first_command_at": 0.0,
+      "final_error_m": 7.216450632905188e-16,
+      "max_error_m": 8.082545875167785e-16
+    },
+    {
+      "goal_id": 1,
+      "status": "reached",
+      "reached_at": 1.6920000000000013,
+      "scheduled_time": 0.2,
+      "activated_at": 0.20000000000000015,
+      "activation_delay": 1.3877787807814457e-16,
+      "first_command_at": 0.20000000000000015,
+      "final_error_m": 0.0008073430154581511,
+      "max_error_m": 0.23926397476926736
+    },
+    {
+      "goal_id": 2,
+      "status": "reached",
+      "reached_at": 4.577999999999718,
+      "scheduled_time": 3.134981559903685,
+      "activated_at": 3.139999999999876,
+      "activation_delay": 0.0050184400961907905,
+      "first_command_at": 3.139999999999876,
+      "final_error_m": 0.0006125348604195539,
+      "max_error_m": 0.21358129771914602
+    },
+    {
+      "goal_id": 3,
+      "status": "reached",
+      "reached_at": 6.599999999999495,
+      "scheduled_time": 5.227879352801059,
+      "activated_at": 5.239999999999645,
+      "activation_delay": 0.012120647198585743,
+      "first_command_at": 5.239999999999645,
+      "final_error_m": 0.0006706393587983133,
+      "max_error_m": 0.15933183487390765
+    },
+    {
+      "goal_id": 4,
+      "status": "reached",
+      "reached_at": 9.755999999999927,
+      "scheduled_time": 8.418899371993334,
+      "activated_at": 8.419999999999481,
+      "activation_delay": 0.0011006280061476303,
+      "first_command_at": 8.419999999999481,
+      "final_error_m": 0.000582260484995218,
+      "max_error_m": 0.14029575979214454
+    },
+    {
+      "goal_id": 5,
+      "status": "reached",
+      "reached_at": 11.986000000000672,
+      "scheduled_time": 10.633449874308273,
+      "activated_at": 10.640000000000223,
+      "activation_delay": 0.006550125691950015,
+      "first_command_at": 10.640000000000223,
+      "final_error_m": 0.000650214123222722,
+      "max_error_m": 0.15791532612701958
+    },
+    {
+      "goal_id": 6,
+      "status": "reached",
+      "reached_at": 15.836000000001958,
+      "scheduled_time": 14.583242844147408,
+      "activated_at": 14.600000000001545,
+      "activation_delay": 0.01675715585413684,
+      "first_command_at": 14.600000000001545,
+      "final_error_m": 0.0005605563938855486,
+      "max_error_m": 0.11398677661130874
+    },
+    {
+      "goal_id": 7,
+      "status": "reached",
+      "reached_at": 18.966000000000367,
+      "scheduled_time": 17.51488677162522,
+      "activated_at": 17.52000000000117,
+      "activation_delay": 0.0051132283759471875,
+      "first_command_at": 17.52000000000117,
+      "final_error_m": 0.0014029769928412678,
+      "max_error_m": 0.21746001704392656
+    },
+    {
+      "goal_id": 8,
+      "status": "reached",
+      "reached_at": 22.653999999998323,
+      "scheduled_time": 21.18499856103,
+      "activated_at": 21.19999999999913,
+      "activation_delay": 0.01500143896912931,
+      "first_command_at": 21.19999999999913,
+      "final_error_m": 0.001179943883445735,
+      "max_error_m": 0.21933659061593205
+    },
+    {
+      "goal_id": 9,
+      "status": "reached",
+      "reached_at": 24.783999999997143,
+      "scheduled_time": 23.35107907147857,
+      "activated_at": 23.35999999999793,
+      "activation_delay": 0.008920928519362548,
+      "first_command_at": 23.35999999999793,
+      "final_error_m": 0.00043700349563934325,
+      "max_error_m": 0.21329049879954295
+    },
+    {
+      "goal_id": 10,
+      "status": "reached",
+      "reached_at": 28.08799999999531,
+      "scheduled_time": 26.601847731123986,
+      "activated_at": 26.619999999996125,
+      "activation_delay": 0.018152268872139388,
+      "first_command_at": 26.619999999996125,
+      "final_error_m": 0.002024156718720028,
+      "max_error_m": 0.1964133831224645
+    },
+    {
+      "goal_id": 11,
+      "status": "active",
+      "reached_at": null,
+      "scheduled_time": 28.957750118103792,
+      "activated_at": 28.959999999994828,
+      "activation_delay": 0.002249881891035699,
+      "first_command_at": 28.959999999994828,
+      "final_error_m": 0.010111156440864123,
+      "max_error_m": 0.18416710103644474
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable",
+  "mpc_input_rejections": 0,
+  "qp_solver_failures": 0,
+  "qp_solution_rejections": 0,
+  "predicted_contact_rejections": 0,
+  "mpc_rejections": 0
+}

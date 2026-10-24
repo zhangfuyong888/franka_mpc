@@ -13,6 +13,9 @@ class MPCProblem:
     def __init__(self, lower, upper, velocity, acceleration, config):
         self.lower, self.upper = np.asarray(lower), np.asarray(upper)
         self.velocity, self.acceleration = np.asarray(velocity), np.asarray(acceleration)
+        # 只收紧未来运动的优化边界，不裁剪测量，也不放宽真实操作界。
+        self.planning_velocity = self.velocity*(1-config['mpc_motion_margin'])
+        self.planning_acceleration = self.acceleration*(1-config['mpc_motion_margin'])
         self.n = len(self.lower)
         self.nx = 2*self.n
         self.N, self.T = config['horizon'], config['period']
@@ -48,8 +51,8 @@ class MPCProblem:
         # x0 已由等式固定；不能裁剪测量值来制造可行解。
         F = sp.eye(self.nz, format='csc')[nx:]
         self.G = sp.vstack([E.tocsc(), F], format='csc')
-        lo = np.r_[np.tile(np.r_[self.lower, -self.velocity], N), np.tile(-self.acceleration, N)]
-        hi = np.r_[np.tile(np.r_[self.upper, self.velocity], N), np.tile(self.acceleration, N)]
+        lo = np.r_[np.tile(np.r_[self.lower, -self.planning_velocity], N), np.tile(-self.planning_acceleration, N)]
+        hi = np.r_[np.tile(np.r_[self.upper, self.planning_velocity], N), np.tile(self.planning_acceleration, N)]
         self.l = np.r_[np.zeros(self.neq), lo]
         self.u = np.r_[np.zeros(self.neq), hi]
 
@@ -73,6 +76,15 @@ class MPCProblem:
         margin = float(np.min(np.r_[ineq-l[self.neq:], u[self.neq:]-ineq]))
         return violation, margin
 
+    def operating_violation(self, z):
+        """对外操作界独立复核；防止应用接受容差放过不可用于下一周期的预测点。"""
+        states = z[:self.ns].reshape(self.N+1, self.nx)
+        q, velocity = states[1:, :self.n], states[1:, self.n:]
+        acceleration = z[self.ns:].reshape(self.N, self.n)
+        return max(0., float(np.max(self.lower-q)), float(np.max(q-self.upper)),
+                   float(np.max(np.abs(velocity)-self.velocity)),
+                   float(np.max(np.abs(acceleration)-self.acceleration)))
+
 
 class LinearMPC:
     def __init__(self, lower, upper, velocity, acceleration, config):
@@ -91,13 +103,15 @@ class LinearMPC:
         start = perf_counter()
         values = [np.asarray(v, float) for v in (q, dq, goal, previous_a)]
         if any(v.shape != (p.n,) or not np.isfinite(v).all() for v in values):
-            return MPCResult(False, 'invalid_input', elapsed=perf_counter()-start)
+            return MPCResult(False, 'invalid_input', elapsed=perf_counter()-start,
+                             failure_kind='input_rejected')
         q, dq, goal, previous_a = values
         # 只容忍活跃边界上的浮点舍入误差，仍将原始实测值写入 x0 等式。
         bound_roundoff = 1e-10
         if (np.any(q < p.lower-bound_roundoff) or np.any(q > p.upper+bound_roundoff)
                 or np.any(np.abs(dq) > p.velocity+bound_roundoff)):
-            return MPCResult(False, 'measured_state_outside_operating_bounds', elapsed=perf_counter()-start)
+            return MPCResult(False, 'measured_state_outside_operating_bounds', elapsed=perf_counter()-start,
+                             failure_kind='input_rejected')
         linear, l, u = p.vectors(q, dq, goal, previous_a)
         # P、G 的结构和数值固定；每周期只更新 c、l、u。接口 q 指线性系数 c，
         # 与本函数的机器人关节位置 q 不同。
@@ -109,14 +123,24 @@ class LinearMPC:
         finite = result.x is not None and np.isfinite(result.x).all()
         if finite:
             violation, margin = p.inspect(result.x, l, u)
+        operating_violation = p.operating_violation(result.x) if finite else float('inf')
         tol = p.c['qp_acceptance']
         # solved / solved inaccurate 都需通过有限性、残差和 Gz 越界复核；
         # 应用接受阈值不等同于 OSQP 自身 eps_abs/eps_rel 停止条件。
         accepted = (info.status_val in (1, 2) and finite and violation <= tol
-                    and info.prim_res <= tol and info.dual_res <= tol)
-        r = MPCResult(accepted, info.status, primal_residual=float(info.prim_res),
+                    and info.prim_res <= tol and info.dual_res <= tol
+                    and operating_violation <= bound_roundoff)
+        status = info.status
+        if info.status_val in (1, 2) and not accepted:
+            detail = ('nonfinite' if not finite else 'operating_bounds'
+                      if operating_violation > bound_roundoff else 'numerical_quality')
+            status = 'solution_rejected:'+detail
+        r = MPCResult(accepted, status, primal_residual=float(info.prim_res),
                       dual_residual=float(info.dual_res), iterations=int(info.iter),
-                      elapsed=elapsed, violation=violation, margin=margin)
+                      elapsed=elapsed, violation=violation, margin=margin,
+                      operating_violation=operating_violation,
+                      failure_kind='' if accepted else ('solver_failure' if info.status_val not in (1, 2)
+                                                       else 'solution_rejected'))
         if accepted:
             states = result.x[:p.ns].reshape(p.N+1, p.nx)
             r.q_pred, r.dq_pred = states[:, :p.n].copy(), states[:, p.n:].copy()

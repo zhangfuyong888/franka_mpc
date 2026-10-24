@@ -1,0 +1,18 @@
+Final tutorial verification, 2026-10-24
+49 passed in 54.28s
+PASS: isolated build, dependency install, pip check, package-location audit, 48 non-video tests and first lesson
+OFFLINE PROVENANCE: 38 locally repacked dependency wheels, including copies of native Conda BLAS/Fortran libraries; NOT an online PyPI installation
+PASS: wheel declares MIT AND Apache-2.0, includes project MIT and original model license
+PASS: .venv/bin/python scripts/check_docs.py 172 relative Markdown links verified
+PASS: .venv/bin/python -m compileall -q src examples scripts tests 
+PASS: bash -n scripts/install.sh 
+PASS: git diff --check 
+PASS: default configuration copies match
+PASS: CI YAML includes second isolated installation; remote CI awaits user upload
+PASS: user-provided README MP4 decodes in full; original two images and video preserved
+PASS: all 9 acceptance commands passed
+PASS single: error=0.000859157 m, MPC rejected=0, backtracks=0, saturation=0
+PASS switch: error=0.001255027 m, MPC rejected=0, backtracks=0, saturation=0
+PASS smooth: error=0.001023605 m, MPC rejected=0, backtracks=0, saturation=0
+PASS rapid: error=0.219967258 m, MPC rejected=0, backtracks=202, saturation=0
+KNOWN EXTERNAL LIMIT: online PyPI requests are denied in the execution environment; no remote CI success claimed

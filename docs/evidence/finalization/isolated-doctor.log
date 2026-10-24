@@ -1,0 +1,12 @@
+Python: 3.10.20 (/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python)
+OK numpy==1.26.4
+OK scipy==1.15.2
+OK mujoco==3.3.7
+OK mink==0.0.13
+OK osqp==1.0.4
+OK qpsolvers==4.8.1
+OK PyYAML==6.0.3
+OK matplotlib==3.10.7
+numpy source: /home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/lib/python3.10/site-packages/numpy/__init__.py
+mujoco source: /home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/lib/python3.10/site-packages/mujoco/__init__.py
+Environment check: PASS

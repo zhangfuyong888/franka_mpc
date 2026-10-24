@@ -35,17 +35,37 @@ def load_config(path=None, **overrides):
             raise ValueError(f'{key} must be finite and nonnegative')
     if c['a_weight'] == 0 or c['terminal_scale'] == 0:
         raise ValueError('a_weight and terminal_scale must be positive')
+    if not np.isfinite(c['mpc_motion_margin']) or not 0 <= c['mpc_motion_margin'] < 1:
+        raise ValueError('mpc_motion_margin must be finite and in [0, 1)')
     if c['feedforward'] not in ('none', 'gravity', 'inverse_dynamics'):
         raise ValueError('Unknown feedforward mode')
     if c['scenario'] not in ('hold', 'single_target', 'switch', 'random',
                               'rapid_switch', 'invalid_goal', 'disturbance'):
         raise ValueError('Unknown scenario')
-    box = np.asarray(c['random_box'], float)
-    interval = np.asarray(c['random_interval'], float)
-    if box.shape != (2, 3) or not np.isfinite(box).all() or np.any(box[0] >= box[1]):
-        raise ValueError('random_box must contain ordered finite xyz corners')
-    if interval.shape != (2,) or not np.isfinite(interval).all() or not 0 < interval[0] <= interval[1]:
-        raise ValueError('random_interval must be positive and ordered')
+    for prefix in ('random', 'rapid_switch'):
+        box = np.asarray(c[prefix+'_box'], float)
+        interval = np.asarray(c[prefix+'_interval'], float)
+        if box.shape != (2, 3) or not np.isfinite(box).all() or np.any(box[0] >= box[1]):
+            raise ValueError(f'{prefix}_box must contain ordered finite xyz corners')
+        if interval.shape != (2,) or not np.isfinite(interval).all() or not 0 < interval[0] <= interval[1]:
+            raise ValueError(f'{prefix}_interval must be positive and ordered')
+    if not isinstance(c['record_video'], bool):
+        raise ValueError('record_video must be a boolean')
+    if not isinstance(c['video_webm'], bool):
+        raise ValueError('video_webm must be a boolean')
+    for key in ('video_width', 'video_height'):
+        if isinstance(c[key], bool) or not isinstance(c[key], int) or c[key] < 2 or c[key] % 2:
+            raise ValueError(f'{key} must be a positive even integer')
+    if not np.isfinite(c['video_fps']) or not 0 < c['video_fps'] <= 1/c['dt']:
+        raise ValueError('video_fps must be positive and no greater than the physics step rate')
+    if not np.isfinite(c['camera_distance']) or c['camera_distance'] <= 0:
+        raise ValueError('camera_distance must be finite and positive')
+    if not np.isfinite([c['camera_azimuth'], c['camera_elevation']]).all():
+        raise ValueError('camera angles must be finite')
+    if not -90 < c['camera_elevation'] < 90:
+        raise ValueError('camera_elevation must be between -90 and 90 degrees')
+    if np.shape(c['camera_lookat']) != (3,) or not np.isfinite(c['camera_lookat']).all():
+        raise ValueError('camera_lookat requires three finite coordinates')
     d = c['disturbance']
     if not np.isfinite([d['start'], d['duration']]).all() or d['start'] < 0 or d['duration'] <= 0:
         raise ValueError('invalid disturbance timing')

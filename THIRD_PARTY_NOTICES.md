@@ -1,3 +1,7 @@
+Project-authored source code and documentation are covered by the root MIT
+[LICENSE](LICENSE). The bundled third-party model and meshes retain their
+Apache-2.0 terms below; the root MIT license does not replace those terms.
+
 # Third-party sources
 
 The bundled Panda MJCF model and meshes originate from Google DeepMind

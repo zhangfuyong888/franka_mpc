@@ -1,0 +1,3 @@
+Final goal: reached; EE error: 0.000859 m; MPC rejected: 0 (input=0, solver=0, solution=0); saturated steps: 0
+Artifacts: /home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/first-lesson; exit code: 0
+Report: /home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/first-lesson/report.md

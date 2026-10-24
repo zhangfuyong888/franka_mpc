@@ -1,0 +1,113 @@
+{
+  "schema_version": 2,
+  "execution_completed": true,
+  "requested_duration_s": 12.0,
+  "duration_completed": true,
+  "fixed_goal_acceptance": true,
+  "duration_s": 12.000000000000677,
+  "wall_seconds": 4.19985095499942,
+  "simulation_wall_ratio": 2.8572442518980616,
+  "final_error_m": 0.0008591567025843566,
+  "max_error_m": 0.20209401331079987,
+  "max_ee_speed_m_s": 0.34777781914411743,
+  "joint_speed_peaks_rad_s": [
+    0.0898305540881048,
+    0.47544624125379786,
+    0.36426862836826696,
+    0.0638444067827148,
+    0.5337508883105082,
+    0.5986318934480911,
+    0.25593624262127457
+  ],
+  "joint_torque_peaks_Nm": [
+    1.1635112939953622,
+    26.895315786141076,
+    2.65168909214007,
+    24.707834763813008,
+    1.5139812838745552,
+    3.189214524675945,
+    0.32969603912172174
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 0,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.0,
+  "qp_timing": {
+    "p50_ms": 0.46479900083795656,
+    "p95_ms": 0.5008251016988652,
+    "max_ms": 0.9879909994197078,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.3887654990394367,
+    "p95_ms": 3.552814448266872,
+    "max_ms": 12.303141000302276,
+    "over_budget": 0
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06614250196435023,
+    "p95_ms": 0.08002355079952396,
+    "max_ms": 0.10193799971602857,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 0,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.0,
+      "activated_at": 0.0,
+      "activation_delay": 0.0,
+      "first_command_at": 0.0,
+      "final_error_m": 7.216450632905188e-16,
+      "max_error_m": 8.082545875167785e-16
+    },
+    {
+      "goal_id": 1,
+      "status": "reached",
+      "reached_at": 1.6360000000000012,
+      "scheduled_time": 0.2,
+      "activated_at": 0.20000000000000015,
+      "activation_delay": 1.3877787807814457e-16,
+      "first_command_at": 0.20000000000000015,
+      "final_error_m": 0.0008591567025843566,
+      "max_error_m": 0.20209401331079987
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable",
+  "mpc_input_rejections": 0,
+  "qp_solver_failures": 0,
+  "qp_solution_rejections": 0,
+  "predicted_contact_rejections": 0,
+  "mpc_rejections": 0,
+  "disturbance": {
+    "plan": {
+      "enabled": true,
+      "kind": "generalized_joint_torque",
+      "units": "Nm",
+      "start": 4.0,
+      "duration": 0.25,
+      "torque": [
+        0,
+        6,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "max_error_after_injection_m": 0.007100198632272515,
+    "recovery_seconds_after_removal": 0.7959999999996663,
+    "final_error_m": 0.0008591567025843566
+  },
+  "paired_comparison": {
+    "maximum_ee_difference_m": 0.006779660367229662,
+    "pre_injection_difference_m": 0.0,
+    "offset_exceeds_pre_injection_noise": true
+  }
+}

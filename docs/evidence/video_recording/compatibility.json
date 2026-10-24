@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-24",
+  "ffmpeg": "/home/zfy/miniconda3/envs/lerobot/bin/ffmpeg",
+  "converted_mp4": "outputs/20261024-111843-926622-rapid_switch/simulation_h264.mp4",
+  "ubuntu_playable_webm": "outputs/20261024-111843-926622-rapid_switch/simulation_vp9.webm",
+  "original_preserved": true,
+  "h264": "Main, yuv420p, 1280x720, 30 fps, 900 frames, 30 seconds; full decode passed",
+  "gst_h264_plugins": {
+    "avdec_h264": false,
+    "openh264dec": false
+  },
+  "gstreamer_webm_full_decode": "gst-launch-1.0 -q filesrc location=outputs/20261024-111843-926622-rapid_switch/simulation_vp9.webm ! matroskademux ! vp9dec ! fakesink sync=false -> exit 0",
+  "future_recording": "simulation.mp4 H.264; video_webm: true also produces simulation.webm"
+}

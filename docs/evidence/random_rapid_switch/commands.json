@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "rapid_switch",
+      "--duration",
+      "10",
+      "--seed",
+      "42",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "output": "outputs/20261024-105407-890360-rapid_switch"
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "rapid_switch",
+      "--duration",
+      "10",
+      "--seed",
+      "7",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "output": "outputs/20261024-105541-914112-rapid_switch"
+  }
+]

@@ -1,16 +1,19 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "panda-mpc-tracking"
 version = "0.1.0"
+license = "MIT AND Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "src/panda_mpc/assets/panda/LICENSE"]
 description = "IK and acceleration-level linear MPC with a simulated MIT joint interface"
 requires-python = ">=3.10,<3.13"
 dependencies = ["numpy==1.26.4", "scipy==1.15.2", "mujoco==3.3.7", "mink==0.0.13", "osqp==1.0.4", "qpsolvers==4.8.1", "PyYAML==6.0.3", "matplotlib==3.10.7"]
 
 [project.optional-dependencies]
 test = ["pytest==8.4.2"]
+video = ["imageio-ffmpeg==0.6.0"]
 
 [project.scripts]
 panda-mpc = "panda_mpc.demo:main"
@@ -24,4 +27,4 @@ panda_mpc = ["defaults.yaml", "assets/panda/*", "assets/panda/assets/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["integration: requires real MuJoCo, mink, OSQP and packaged Panda assets"]
+markers = ["integration: requires real MuJoCo, mink, OSQP and packaged Panda assets", "video: requires optional FFmpeg and EGL offscreen rendering"]

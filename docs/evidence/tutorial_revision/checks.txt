@@ -1,0 +1,15 @@
+Tutorial revision verification, 2026-10-24
+Existing suite: 43 passed in 49.96s
+PASS: 30 s rapid-switch t/q/dq/reference/torque/goal arrays exactly equal the prior experiment
+PASS: default YAML copies match; control thresholds remain unchanged
+PASS: all 38 pinned distributions and Python requirements match the observed environment; not a clean-install claim
+PASS: installer refuses to overwrite existing .venv
+PASS: workflow YAML parses; remote GitHub Actions have not been run
+PASS: .venv/bin/python scripts/check_docs.py 139 relative Markdown links verified
+PASS: .venv/bin/python -m compileall -q src examples scripts tests 
+PASS: bash -n scripts/install.sh 
+PASS: git diff --check 
+CONFIRMED LIMITATION: single-joint smoothness=3 strict numerical-bound rejection, diagnostic saved; no state clipping
+PASS: isolated wheel resource audit found all 67 meshes plus scene/config/model license; no-deps install only
+BLOCKED: isolated full dependency installation could not obtain NumPy from PyPI; actual pip output saved separately
+Source-code license selection is pending user choice; third-party licenses preserved

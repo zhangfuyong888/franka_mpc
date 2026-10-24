@@ -1,0 +1,32 @@
+{
+  "current_run": "outputs/tutorial-check-smooth",
+  "baseline_run": "outputs/tutorial-check-switch",
+  "metrics": {
+    "current": {
+      "ee_error_rms_m": 0.0769855171287656,
+      "joint_tracking_rms_rad": [
+        3.775448822400223e-05,
+        7.320845999928176e-05,
+        7.229814131313542e-05,
+        3.1499641218356554e-05,
+        7.303144971605255e-05,
+        4.1330081793598674e-05,
+        2.6110990592999896e-05
+      ],
+      "saturated_steps": 0
+    },
+    "baseline": {
+      "ee_error_rms_m": 0.07580844039131225,
+      "joint_tracking_rms_rad": [
+        3.996596468118928e-05,
+        7.601777729674353e-05,
+        7.4279829916911e-05,
+        3.231082462799575e-05,
+        7.574275152504376e-05,
+        4.233220120583112e-05,
+        2.7921983892718843e-05
+      ],
+      "saturated_steps": 0
+    }
+  }
+}

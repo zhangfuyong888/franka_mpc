@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "execution_completed": true,
+  "requested_duration_s": 10.0,
+  "duration_completed": true,
+  "fixed_goal_acceptance": true,
+  "duration_s": 10.000000000000009,
+  "wall_seconds": 3.6210451750012,
+  "simulation_wall_ratio": 2.7616335938136136,
+  "final_error_m": 0.0008591567025897337,
+  "max_error_m": 0.20209401331079987,
+  "max_ee_speed_m_s": 0.34777781914411743,
+  "joint_speed_peaks_rad_s": [
+    0.0898305540881048,
+    0.47544624125379786,
+    0.36426862836826696,
+    0.01533848291037863,
+    0.5337508883105082,
+    0.5986318934480911,
+    0.25593624262127457
+  ],
+  "joint_torque_peaks_Nm": [
+    1.1635112939953622,
+    18.8222621301657,
+    2.65168909214007,
+    23.057252438188424,
+    1.5139812838745552,
+    3.189214524675945,
+    0.32969603912172174
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 0,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.0,
+  "qp_timing": {
+    "p50_ms": 0.46276300054159947,
+    "p95_ms": 0.5032796016166684,
+    "max_ms": 0.9298229997511953,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.4436045007169014,
+    "p95_ms": 3.620769049848604,
+    "max_ms": 11.504522000905126,
+    "over_budget": 0
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06567350101249758,
+    "p95_ms": 0.07934929908515188,
+    "max_ms": 0.1340809976682067,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 0,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.0,
+      "activated_at": 0.0,
+      "activation_delay": 0.0,
+      "first_command_at": 0.0,
+      "final_error_m": 7.216450632905188e-16,
+      "max_error_m": 8.082545875167785e-16
+    },
+    {
+      "goal_id": 1,
+      "status": "reached",
+      "reached_at": 1.6360000000000012,
+      "scheduled_time": 0.2,
+      "activated_at": 0.20000000000000015,
+      "activation_delay": 1.3877787807814457e-16,
+      "first_command_at": 0.20000000000000015,
+      "final_error_m": 0.0008591567025897337,
+      "max_error_m": 0.20209401331079987
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable",
+  "mpc_input_rejections": 0,
+  "qp_solver_failures": 0,
+  "qp_solution_rejections": 0,
+  "predicted_contact_rejections": 0,
+  "mpc_rejections": 0
+}

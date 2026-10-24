@@ -20,7 +20,8 @@ for scenario, duration in runs:
     code = subprocess.run(command).returncode
     summary_path = root/scenario/'summary.json'
     summary = json.loads(summary_path.read_text()) if summary_path.exists() else {}
-    passed = code == (2 if scenario == 'invalid_goal' else 0) and summary.get('execution_completed', False)
+    passed = (code == (2 if scenario == 'invalid_goal' else 0)
+              and summary.get('execution_completed', False) and summary.get('duration_completed', False))
     if scenario in ('hold', 'single_target', 'disturbance'):
         passed = passed and summary.get('fixed_goal_acceptance', False)
     records.append({'command': command, 'exit_code': code,

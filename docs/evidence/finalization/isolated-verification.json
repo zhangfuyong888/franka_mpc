@@ -1,0 +1,124 @@
+{
+  "python": "3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]",
+  "installation_source": "local-wheelhouse",
+  "offline_wheelhouse": "/tmp/panda-offline-wheelhouse-20261024",
+  "passed": true,
+  "commands": [
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--disable-pip-version-check",
+        "--retries",
+        "0",
+        "--timeout",
+        "10",
+        "-c",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/requirements/constraints-py310-linux.txt",
+        "--no-index",
+        "--find-links",
+        "/tmp/panda-offline-wheelhouse-20261024",
+        "setuptools>=77",
+        "wheel"
+      ],
+      "exit_code": 0,
+      "log": "build-dependencies.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "pip",
+        "wheel",
+        "--no-deps",
+        "--no-build-isolation",
+        "--wheel-dir",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/wheel",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking"
+      ],
+      "exit_code": 0,
+      "log": "build.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--disable-pip-version-check",
+        "--retries",
+        "0",
+        "--timeout",
+        "10",
+        "-c",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/requirements/constraints-py310-linux.txt",
+        "--no-index",
+        "--find-links",
+        "/tmp/panda-offline-wheelhouse-20261024",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/wheel/panda_mpc_tracking-0.1.0-py3-none-any.whl[test]"
+      ],
+      "exit_code": 0,
+      "log": "install.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "log": "pip-check.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-c",
+        "import importlib, pathlib, sys\nroot=pathlib.Path(sys.prefix).resolve()\nfor name in ('panda_mpc','numpy','scipy','mujoco','mink','osqp'):\n p=pathlib.Path(importlib.import_module(name).__file__).resolve()\n assert p.is_relative_to(root), (name,str(p),str(root))\n print(name,p)\n"
+      ],
+      "exit_code": 0,
+      "log": "package-locations.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "panda_mpc.doctor"
+      ],
+      "exit_code": 0,
+      "log": "doctor.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-W",
+        "error",
+        "-m",
+        "not video",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/tests"
+      ],
+      "exit_code": 0,
+      "log": "tests.log"
+    },
+    {
+      "command": [
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/venv/bin/python",
+        "-m",
+        "panda_mpc.demo",
+        "--config",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/configs/tutorial/01_single_target.yaml",
+        "--headless",
+        "--output",
+        "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/outputs/finalization-clean-build/first-lesson"
+      ],
+      "exit_code": 0,
+      "log": "first-lesson.log"
+    }
+  ],
+  "dependency_provenance": "dependency-provenance.json"
+}

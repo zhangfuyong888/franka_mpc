@@ -1,0 +1,3 @@
+Public PyPI availability probe
+https://pypi.org/pypi/numpy/1.26.4/json
+URLError: <urlopen error [Errno 1] Operation not permitted>

@@ -1,0 +1,169 @@
+[
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "hold",
+      "--headless",
+      "--duration",
+      "10",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/hold"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "single_target",
+      "--headless",
+      "--duration",
+      "10",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/single_target"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "switch",
+      "--headless",
+      "--duration",
+      "12",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/switch"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "random",
+      "--headless",
+      "--duration",
+      "30",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/random"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "rapid_switch",
+      "--headless",
+      "--duration",
+      "10",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/rapid_switch"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "invalid_goal",
+      "--headless",
+      "--duration",
+      "8",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/invalid_goal"
+    ],
+    "exit_code": 2,
+    "expected_code": 2,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "disturbance",
+      "--headless",
+      "--duration",
+      "12",
+      "--seed",
+      "42",
+      "--output",
+      "outputs/acceptance-20261024-161350/disturbance"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.demo",
+      "--scenario",
+      "disturbance",
+      "--headless",
+      "--duration",
+      "12",
+      "--seed",
+      "42",
+      "--no-disturbance",
+      "--output",
+      "outputs/acceptance-20261024-161350/control"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  },
+  {
+    "command": [
+      "/home/zfy/franka_mpc_tracking/panda-mpc-tracking/.venv/bin/python",
+      "-m",
+      "panda_mpc.analyze",
+      "--run-dir",
+      "outputs/acceptance-20261024-161350/disturbance",
+      "--compare",
+      "outputs/acceptance-20261024-161350/control"
+    ],
+    "exit_code": 0,
+    "expected_code": 0,
+    "passed": true
+  }
+]

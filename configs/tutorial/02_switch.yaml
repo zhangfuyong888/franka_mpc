@@ -1,0 +1,5 @@
+# 第二课：默认三个固定目标，途中替换；也可 --events configs/switch_events.json。
+scenario: switch
+duration: 12.0
+seed: 42
+record_video: false

@@ -1,0 +1,21 @@
+{
+  "file": "simulation.mp4",
+  "codec": "mp4v",
+  "fps": 30,
+  "width": 1280,
+  "height": 720,
+  "frames": 900,
+  "playback_seconds": 30.0,
+  "last_sample_time": 29.96799999999427,
+  "sampling": "pre-step simulation time; constant playback fps",
+  "camera": {
+    "camera_lookat": [
+      0.2,
+      0.0,
+      0.5
+    ],
+    "camera_distance": 2.5,
+    "camera_azimuth": 135.0,
+    "camera_elevation": -25.0
+  }
+}

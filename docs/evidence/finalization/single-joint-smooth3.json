@@ -1,0 +1,9 @@
+{
+  "model": "ideal single-joint double integrator, not MuJoCo",
+  "horizon": 25,
+  "smoothness": 3.0,
+  "final_error_rad": 1.0077252587947783e-08,
+  "final_speed_rad_s": 3.656290068295115e-08,
+  "peak_speed_rad_s": 0.6993000000072758,
+  "peak_acceleration_rad_s2": 1.998000025282607
+}

@@ -1,0 +1,5 @@
+# 第一课：无录制、默认运动限制，先观察到达与保持。
+scenario: single_target
+duration: 10.0
+seed: 42
+record_video: false

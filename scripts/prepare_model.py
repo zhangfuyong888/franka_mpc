@@ -41,7 +41,11 @@ def derive(root=ROOT):
     (root / 'scene.xml').write_text('''<!-- Modified project scene: bundled torque Panda and ground plane. See LICENSE/provenance.json. -->
 <mujoco model="panda_tracking">
   <include file="panda.xml"/>
-  <visual><global azimuth="135" elevation="-25"/></visual>
+  <visual>
+    <global azimuth="135" elevation="-25"/>
+    <!-- Brighter ambient fill keeps the arm visible from every viewing angle. -->
+    <headlight ambient="0.4 0.4 0.4" diffuse="0.7 0.7 0.7" specular="0.2 0.2 0.2"/>
+  </visual>
   <worldbody>
     <geom name="floor" type="plane" size="2 2 0.1" rgba="0.24 0.27 0.30 1"/>
   </worldbody>

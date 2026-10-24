@@ -7,6 +7,7 @@ import hashlib
 import json
 import platform
 import sys
+import subprocess
 from datetime import datetime, timezone
 import numpy as np
 import yaml
@@ -32,6 +33,17 @@ def write_json(path, value):
     Path(path).write_text(json.dumps(serial(value), ensure_ascii=False, indent=2, allow_nan=False)+'\n')
 
 
+def git_version(directory):
+    """只读记录源码提交和未提交标志；wheel 安装或没有 Git 时允许不可用。"""
+    try:
+        options = dict(cwd=directory, capture_output=True, text=True, timeout=5, check=True)
+        commit = subprocess.run(['git', 'rev-parse', 'HEAD'], **options).stdout.strip()
+        dirty = bool(subprocess.run(['git', 'status', '--porcelain'], **options).stdout.strip())
+        return {'commit': commit, 'dirty': dirty}
+    except (OSError, subprocess.SubprocessError):
+        return {'commit': None, 'dirty': None}
+
+
 class Telemetry:
     def __init__(self, output, config):
         self.path = Path(output)
@@ -50,6 +62,7 @@ class Telemetry:
             source_hash.update(p.name.encode()+p.read_bytes())
         model = pkg/'assets/panda/model_sha256.json'
         write_json(self.path/'metadata.json', {
+            'schema_version': 2, 'git': git_version(pkg), 'command': sys.argv,
             'utc': datetime.now(timezone.utc).isoformat(), 'python': sys.version,
             'platform': platform.platform(), 'dependencies': deps,
             'source_sha256': source_hash.hexdigest(),

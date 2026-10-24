@@ -1,0 +1,22 @@
+# 用法：python -m panda_mpc.demo --config configs/rapid_switch.yaml
+scenario: rapid_switch
+duration: 10.0
+seed: 42
+# 七个关节的速度上限降为默认值的一半，单位 rad/s。
+velocity: [0.35, 0.35, 0.35, 0.35, 0.45, 0.45, 0.45]
+# 世界坐标系下的 [x, y, z] 下界和上界，单位 m。
+rapid_switch_box: [[0.25, -0.35, 0.30], [0.65, 0.35, 0.75]]
+# 从当前目标到下一个目标的计划时间间隔，单位为仿真秒。
+# 不等待到达；新目标会抢占正在执行的目标。实际激活对齐到 20 ms 控制 tick。
+rapid_switch_interval: [0.3, 0.9]
+# 自动录制到本次输出目录的 simulation.mp4；--no-record-video 可临时关闭。
+record_video: true
+# 同时提供 VP9 WebM，便于缺少 H.264 解码插件的 Ubuntu 播放器观看。
+video_webm: true
+video_fps: 30
+video_width: 1280
+video_height: 720
+camera_lookat: [0.2, 0.0, 0.5]
+camera_distance: 1.8
+camera_azimuth: 135.0
+camera_elevation: -25.0

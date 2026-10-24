@@ -1,0 +1,347 @@
+[
+  {
+    "name": "absl-py",
+    "version": "2.5.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "absl_py-2.5.1-py3-none-any.whl",
+    "sha256": "7669a88e19421ad4acd9547f6c2441f98d93f927911a18e2d56a144dc9776bfa",
+    "native-runtime": []
+  },
+  {
+    "name": "cloudpickle",
+    "version": "3.1.2",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "cloudpickle-3.1.2-py3-none-any.whl",
+    "sha256": "78d97f4cacaf0db99a561818b0598088d08b5908b9b488db0f16df1864b764e3",
+    "native-runtime": []
+  },
+  {
+    "name": "contourpy",
+    "version": "1.3.2",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "contourpy-1.3.2-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "43e411de3af2317744dc40b8ba3da79dc81146d3b2075283c73a054a4572793c",
+    "native-runtime": []
+  },
+  {
+    "name": "cycler",
+    "version": "0.12.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "cycler-0.12.1-py3-none-any.whl",
+    "sha256": "979358ea83c557bdee412ceedabbb6934bf364e43a3ff44eec7f38826a2df441",
+    "native-runtime": []
+  },
+  {
+    "name": "daqp",
+    "version": "0.10.3",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "daqp-0.10.3-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "c07516adf325157feb8596dd26599fa8e2e576f2d36ad1450d6c4b1070faca94",
+    "native-runtime": []
+  },
+  {
+    "name": "etils",
+    "version": "1.13.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "etils-1.13.0-py3-none-any.whl",
+    "sha256": "f82b566ddbb2032db62bba623e18313aca96cf64731a90ef387a1371e9a05e56",
+    "native-runtime": []
+  },
+  {
+    "name": "exceptiongroup",
+    "version": "1.3.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "exceptiongroup-1.3.1-py3-none-any.whl",
+    "sha256": "1f1d7692d81eb4da76a1da57c85c24676abccdc1618a30bff34ef7a6026dc8fe",
+    "native-runtime": []
+  },
+  {
+    "name": "fonttools",
+    "version": "4.63.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "fonttools-4.63.0-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "20f264521478e9c274d5135c5517c8b8480d715df2355287521f18c4fbbb8d56",
+    "native-runtime": []
+  },
+  {
+    "name": "fsspec",
+    "version": "2026.7.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "fsspec-2026.7.0-py3-none-any.whl",
+    "sha256": "bac467b76a4d49c9c4cd40f0178061689aaf2f29654f0495dc6fb4f5013d1780",
+    "native-runtime": []
+  },
+  {
+    "name": "glfw",
+    "version": "2.11.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "glfw-2.11.0-py3-none-manylinux_2_28_x86_64.whl",
+    "sha256": "ef36e2c2c2480c7b7fa45261d2c776822dcfd7aca6d694da58d739269f3c6eb6",
+    "native-runtime": []
+  },
+  {
+    "name": "importlib-resources",
+    "version": "7.1.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "importlib_resources-7.1.0-py3-none-any.whl",
+    "sha256": "e642192498dfc0b9027a1a8aa28d13de39f1540c9bafc498e399c3465b4a197b",
+    "native-runtime": []
+  },
+  {
+    "name": "iniconfig",
+    "version": "2.3.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "iniconfig-2.3.0-py3-none-any.whl",
+    "sha256": "7163b1d36d765be0e90925f0ce7f5af5b45925f0e3afb09f3edbe5114f5e4d2f",
+    "native-runtime": []
+  },
+  {
+    "name": "jinja2",
+    "version": "3.1.6",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "jinja2-3.1.6-py3-none-any.whl",
+    "sha256": "9e9926dee73be8bcb0446f224f5bae8555b7025d50f371dc13863afbbda81685",
+    "native-runtime": []
+  },
+  {
+    "name": "joblib",
+    "version": "1.6.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "joblib-1.6.0-py3-none-any.whl",
+    "sha256": "921f714c1f5727e8be1a64a9cb2973c933155c99138a1b2c1b0a92a537d39f05",
+    "native-runtime": []
+  },
+  {
+    "name": "kiwisolver",
+    "version": "1.5.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "kiwisolver-1.5.0-cp310-cp310-manylinux_2_12_x86_64.whl",
+    "sha256": "d8ccf3d946494270d110de7bc8cc7b425448d8fe476a28e22c8c6a7bce1029f1",
+    "native-runtime": []
+  },
+  {
+    "name": "markupsafe",
+    "version": "3.0.3",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "markupsafe-3.0.3-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "7b284c9c77c1da8e799cad72c008db90776a786679ebb29a34838a285ab82508",
+    "native-runtime": []
+  },
+  {
+    "name": "matplotlib",
+    "version": "3.10.7",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "matplotlib-3.10.7-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "b378aa57d0d37e543c432383616ddca50755485ce0a88de7203ff93aa50402c7",
+    "native-runtime": []
+  },
+  {
+    "name": "mink",
+    "version": "0.0.13",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "mink-0.0.13-py3-none-any.whl",
+    "sha256": "2318b0b93212791f7376e451ffdd3b54a8f0c01f870088c192f5c830435ce378",
+    "native-runtime": []
+  },
+  {
+    "name": "mujoco",
+    "version": "3.3.7",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "mujoco-3.3.7-cp310-cp310-manylinux_2_27_x86_64.whl",
+    "sha256": "97f7568bc17e2088801701ba1af69c233819b566448fad1e1d7ff1507f300e04",
+    "native-runtime": []
+  },
+  {
+    "name": "numpy",
+    "version": "1.26.4",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "numpy-1.26.4-cp310-cp310-linux_x86_64.whl",
+    "sha256": "d0fe40325e852275ef9fcec28a9e5614e858676621b8c21f94f042615eef13bb",
+    "native-runtime": [
+      {
+        "file": "libblas.so.3",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libblas.so.3",
+        "sha256": "78e63bed9f40a1877c93da99a0fc29be73ea76e4cfa83a8d14199109934a8305"
+      },
+      {
+        "file": "libcblas.so.3",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libcblas.so.3",
+        "sha256": "78e63bed9f40a1877c93da99a0fc29be73ea76e4cfa83a8d14199109934a8305"
+      },
+      {
+        "file": "liblapack.so.3",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/liblapack.so.3",
+        "sha256": "78e63bed9f40a1877c93da99a0fc29be73ea76e4cfa83a8d14199109934a8305"
+      },
+      {
+        "file": "libopenblas.so.0",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libopenblas.so.0",
+        "sha256": "78e63bed9f40a1877c93da99a0fc29be73ea76e4cfa83a8d14199109934a8305"
+      },
+      {
+        "file": "libgfortran.so.5",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libgfortran.so.5",
+        "sha256": "59383967f5892b20ae2831d9dcc1b84ac4e34a14329793005e90e5ef541f68be"
+      },
+      {
+        "file": "libquadmath.so.0",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libquadmath.so.0",
+        "sha256": "0fec3a68aff4c1b10c08559d88b830a1fac30abdfb31f390edee7a8a3473ab1a"
+      },
+      {
+        "file": "libgcc_s.so.1",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libgcc_s.so.1",
+        "sha256": "518553cb760166496a9844a8fdd8acaffed9229a581992a424e0ffd36098df52"
+      },
+      {
+        "file": "libstdc++.so.6",
+        "source": "/home/zfy/miniconda3/envs/tv/lib/libstdc++.so.6",
+        "sha256": "4db7db432420e28a0c42bed38f7b33cfe1a97aa3a5ce7c92ddd2f4e5afe16ceb"
+      }
+    ]
+  },
+  {
+    "name": "osqp",
+    "version": "1.0.4",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "osqp-1.0.4-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "c1113b749b1aefecd17370f75de8f1e681160e9d60729cc4197a8a0c0832d8c5",
+    "native-runtime": []
+  },
+  {
+    "name": "packaging",
+    "version": "26.3",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "packaging-26.3-py3-none-any.whl",
+    "sha256": "7f5579179dbc813abb414a171b2e31501591dd14013cc80bac7717a44495015a",
+    "native-runtime": []
+  },
+  {
+    "name": "pillow",
+    "version": "12.3.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pillow-12.3.0-cp310-cp310-manylinux_2_27_x86_64.whl",
+    "sha256": "415b6dd9f474f58d979841772ad66bbad0f6b74753b6a933fc3050b88e60c223",
+    "native-runtime": []
+  },
+  {
+    "name": "pluggy",
+    "version": "1.6.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pluggy-1.6.0-py3-none-any.whl",
+    "sha256": "f37ca585d4076a077ceb7b85b5024d1e6bf2e90b42607f5ffdede3c2d205c7a3",
+    "native-runtime": []
+  },
+  {
+    "name": "pygments",
+    "version": "2.20.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pygments-2.20.0-py3-none-any.whl",
+    "sha256": "00c485aef0b63de68db9b795a1f01af4f5ecb3e85064d29e196e3ffb496279e4",
+    "native-runtime": []
+  },
+  {
+    "name": "pyopengl",
+    "version": "3.1.10",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pyopengl-3.1.10-py3-none-any.whl",
+    "sha256": "b130bc435f57949bc94505078550ab843ee96c8f03959101eb625311f470f4a6",
+    "native-runtime": []
+  },
+  {
+    "name": "pyparsing",
+    "version": "3.3.2",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pyparsing-3.3.2-py3-none-any.whl",
+    "sha256": "7e19a06bdf93c7801342204f243bdcc3bae502876799e04e1739a69df5c18e17",
+    "native-runtime": []
+  },
+  {
+    "name": "pytest",
+    "version": "8.4.2",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pytest-8.4.2-py3-none-any.whl",
+    "sha256": "9c10a3f75d011700e2b1b931abadb3d19569b47f7454615b5d74af080bffc47c",
+    "native-runtime": []
+  },
+  {
+    "name": "python-dateutil",
+    "version": "2.9.0.post0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "python_dateutil-2.9.0.post0-py3-none-any.whl",
+    "sha256": "2faf95eb234868cbf0414ee96966eb4cc76fcfe5d1498897cd558fbda1a8bd6e",
+    "native-runtime": []
+  },
+  {
+    "name": "pyyaml",
+    "version": "6.0.3",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "pyyaml-6.0.3-cp310-cp310-manylinux_2_17_x86_64.whl",
+    "sha256": "7f74f89316ec0800c2702c9de1ec3307ef38683c3e86d12c597d2ea950650f51",
+    "native-runtime": []
+  },
+  {
+    "name": "qpsolvers",
+    "version": "4.8.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "qpsolvers-4.8.1-py3-none-any.whl",
+    "sha256": "60e2503f693a188e32730557149be4cffe4a12fe94d5f6ee0934944c4937de84",
+    "native-runtime": []
+  },
+  {
+    "name": "scipy",
+    "version": "1.15.2",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "scipy-1.15.2-cp310-cp310-linux_x86_64.whl",
+    "sha256": "c1d3e542000f5e68445c94c0e7a4208c75d6d4abcf57ef000c1309262b147b28",
+    "native-runtime": []
+  },
+  {
+    "name": "setuptools",
+    "version": "79.0.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "setuptools-79.0.1-py3-none-any.whl",
+    "sha256": "a887bada46e8c4300ad5152fcc3e8e4984186688dcd7e2cc14b9e6dae6b55a73",
+    "native-runtime": []
+  },
+  {
+    "name": "six",
+    "version": "1.17.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "six-1.17.0-py3-none-any.whl",
+    "sha256": "da2eda4a04ea74c7667403b99f0499c639eee598126f6e578fba1ecee2755f6a",
+    "native-runtime": []
+  },
+  {
+    "name": "tomli",
+    "version": "2.4.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "tomli-2.4.1-py3-none-any.whl",
+    "sha256": "feb68e1795aa943f731b2399eb43125e03f1dcebf2a8df9418bf3eca8e5976b6",
+    "native-runtime": []
+  },
+  {
+    "name": "typing-extensions",
+    "version": "4.16.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+    "sha256": "2291819f39123c21f49099159d1835f1b69da6711a5c1c8606f8801f62c7f862",
+    "native-runtime": []
+  },
+  {
+    "name": "wheel",
+    "version": "0.48.0",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "wheel-0.48.0-py3-none-any.whl",
+    "sha256": "7909b31e0f25ca38baa4745b500f17396798fd5b912ac9d42b3f0b517019798d",
+    "native-runtime": []
+  },
+  {
+    "name": "zipp",
+    "version": "4.1.1",
+    "source": "installed-distribution-repacked-local-test-only",
+    "wheel": "zipp-4.1.1-py3-none-any.whl",
+    "sha256": "759b3f5d5e736452df57f37792bd857370341813bc4334235fa8bb0422164509",
+    "native-runtime": []
+  }
+]

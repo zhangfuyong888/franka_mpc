@@ -1,0 +1,7 @@
+WARNING: The directory '/home/zfy/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Looking in links: /tmp/panda-offline-wheelhouse-20261024
+Requirement already satisfied: setuptools>=77 in ./outputs/finalization-clean-build/venv/lib/python3.10/site-packages (79.0.1)
+Processing /tmp/panda-offline-wheelhouse-20261024/wheel-0.48.0-py3-none-any.whl
+Processing /tmp/panda-offline-wheelhouse-20261024/packaging-26.3-py3-none-any.whl
+Installing collected packages: packaging, wheel
+Successfully installed packaging-26.3 wheel-0.48.0

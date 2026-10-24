@@ -8,7 +8,7 @@ import pytest
 from panda_mpc.config import load_config
 from panda_mpc.types import JointCommand, GoalEvent, RobotState
 from panda_mpc.mit import compose
-from panda_mpc.goals import GoalManager, read_events
+from panda_mpc.goals import GoalManager, read_events, make_events
 from panda_mpc.reference import ReferenceSegment, ReferenceGenerator, ReferenceFailure
 from panda_mpc.mpc import MPCProblem
 from panda_mpc.disturbances import Disturbance
@@ -38,9 +38,114 @@ def test_mit_units_total_clipping_and_expiry():
 def test_invalid_command_and_config():
     with pytest.raises(ValueError):
         JointCommand(np.zeros(6), np.zeros(7), np.ones(7), np.ones(7), np.zeros(7), 0, 1, 1)
-    for kwargs in [{'period': 0.021}, {'kp': [1]}, {'torque': [float('nan')]*7}, {'duration': -1}]:
+    for kwargs in [{'period': 0.021}, {'kp': [1]}, {'torque': [float('nan')]*7}, {'duration': -1},
+                   {'mpc_motion_margin': -0.1}, {'mpc_motion_margin': 1}, {'mpc_motion_margin': float('nan')}]:
         with pytest.raises(ValueError):
             load_config(**kwargs)
+
+
+def test_qp_motion_bounds_are_tightened_without_modifying_measurement():
+    c = load_config(horizon=2)
+    p = MPCProblem(-np.ones(1), np.ones(1), np.array([.7]), np.array([2.]), c)
+    assert p.planning_velocity[0] < p.velocity[0]
+    assert p.planning_acceleration[0] < p.acceleration[0]
+    measured_q, measured_v = np.array([.1]), np.array([.7])
+    _, lower, upper = p.vectors(measured_q, measured_v, np.zeros(1), np.zeros(1))
+    np.testing.assert_array_equal(lower[:2], [.1, .7])
+    np.testing.assert_array_equal(upper[:2], [.1, .7])
+    # 即使满足较宽的应用接受阈值，超出原始操作界的候选也不能作为下一周期状态返回。
+    z = np.zeros(p.nz)
+    z[p.nx+p.n] = .7000001
+    assert 0 < p.operating_violation(z) < c['qp_acceptance']
+    # 注入一个数值上达到 OSQP 接受容差、却越过原始速度界的解。
+    from types import SimpleNamespace
+    from panda_mpc.mpc import LinearMPC
+    states = np.array([[0., .7], [.014, .7000001], [.028000002, .7000001]])
+    z = np.r_[states.ravel(), np.zeros(2)]
+    class OvershootingSolver:
+        def update(self, **kwargs):
+            pass
+        def solve(self, **kwargs):
+            return SimpleNamespace(x=z, info=SimpleNamespace(status_val=1, status='solved',
+                                   prim_res=1e-7, dual_res=0., iter=10))
+    controller = LinearMPC.__new__(LinearMPC)
+    controller.problem, controller.solver = p, OvershootingSolver()
+    result = controller.solve(np.zeros(1), np.array([.7]), np.zeros(1), np.zeros(1))
+    assert result.violation < c['qp_acceptance']
+    assert not result.success and result.failure_kind == 'solution_rejected'
+    assert result.status == 'solution_rejected:operating_bounds'
+
+
+@pytest.mark.parametrize('overrides', [
+    {'rapid_switch_box': [[0, 0, 0], [0, 1, 1]]},
+    {'rapid_switch_box': [[0, 0], [1, 1]]},
+    {'rapid_switch_box': [[0, 0, 0], [1, 1, float('nan')]]},
+    {'rapid_switch_interval': [0, 0.3]},
+    {'rapid_switch_interval': [0.9, 0.3]},
+    {'rapid_switch_interval': [0.3, float('inf')]},
+])
+def test_rapid_switch_invalid_sampling_config(overrides):
+    with pytest.raises(ValueError, match='rapid_switch_'):
+        load_config(**overrides)
+
+
+def test_random_switch_generation_and_independent_time_stream():
+    """只检验采样/拒采调度；真实 IK 和物理由集成测试覆盖。"""
+    from types import SimpleNamespace
+
+    class Robot:
+        home = np.zeros(7)
+        def fk(self, q):
+            return np.zeros(3)
+
+    class ScreeningIK:
+        def __init__(self, reject_first=False):
+            self.reject_first = reject_first
+        def solve(self, position, seed):
+            reject, self.reject_first = self.reject_first, False
+            return SimpleNamespace(success=not reject, reason='injected_rejection', position_error=1.)
+
+    def generate(c, reject_first=False):
+        return make_events(c, Robot(), ScreeningIK(reject_first))
+
+    c = load_config(scenario='rapid_switch', duration=10., seed=42)
+    events, sampling = generate(c)
+    repeat, _ = generate(c)
+    positions = np.array([e.position_world for e in events[1:]])
+    times = np.array([e.scheduled_time for e in events[1:]])
+    lo, hi = np.asarray(c['rapid_switch_box'])
+    assert len(events) > 5 and times[0] == .2 and times[-1] < c['duration']
+    assert np.all(positions >= lo) and np.all(positions <= hi)
+    assert len(np.unique(positions, axis=0)) == len(positions)
+    assert np.any(positions < np.asarray(c['random_box'])[0]) or np.any(positions > np.asarray(c['random_box'])[1])
+    intervals = np.diff(times)
+    assert np.all(intervals >= .3) and np.all(intervals <= .9)
+    assert np.ptp(intervals) > .1
+    np.testing.assert_array_equal(positions, [e.position_world for e in repeat[1:]])
+    np.testing.assert_array_equal(times, [e.scheduled_time for e in repeat[1:]])
+    assert sampling['box'] == c['rapid_switch_box']
+    assert sampling['interval'] == c['rapid_switch_interval']
+    assert sampling['accepted'] == len(positions)
+    rejected, log = generate(c, reject_first=True)
+    np.testing.assert_array_equal(times, [e.scheduled_time for e in rejected[1:]])
+    assert len(log['rejected']) == 1
+    other, _ = generate(load_config(scenario='rapid_switch', seed=7))
+    assert not np.array_equal(positions[0], other[1].position_world)
+    # 用户覆盖仅作用于快速随机场景；普通 random 继续使用独立参数。
+    custom = load_config(scenario='rapid_switch', rapid_switch_box=[[.1, -.2, .3], [.2, -.1, .4]],
+                         rapid_switch_interval=[.4, .4])
+    custom_events, _ = generate(custom)
+    np.testing.assert_allclose(np.diff([e.scheduled_time for e in custom_events[1:]]), .4)
+    for e in custom_events[1:]:
+        assert np.all(e.position_world >= np.asarray(custom['rapid_switch_box'])[0])
+        assert np.all(e.position_world <= np.asarray(custom['rapid_switch_box'])[1])
+    normal = load_config(scenario='random')
+    normal_events, _ = generate(normal)
+    changed = dict(normal, rapid_switch_box=custom['rapid_switch_box'], rapid_switch_interval=[.4, .4])
+    normal_repeat, _ = generate(changed)
+    for a, b in zip(normal_events, normal_repeat):
+        assert a.scheduled_time == b.scheduled_time
+        np.testing.assert_array_equal(a.position_world, b.position_world)
 
 
 def test_assets_complete_original_hashes_and_torque_xml():

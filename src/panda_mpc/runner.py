@@ -19,14 +19,32 @@ from .telemetry import Telemetry, write_json
 from .types import JointCommand
 
 
+def _activate_latest_goal(goals, ik, monitor, state):
+    """慢环入口：只激活最新事件，从实测构型求 IK，不重置运动或参考状态。"""
+    record = goals.consume(state.t)
+    if record is None:
+        return None
+    outcome = ik.solve(record.event.position_world, state.q)
+    record.ik = asdict(outcome)
+    if outcome.success:
+        record.q_goal = outcome.q_goal
+    else:
+        record.status, record.reason = 'rejected', outcome.reason
+        monitor.emit(state.t, 'target_rejected', outcome.reason, record.event.goal_id)
+    return record
+
+
 def run(config, output, headless=True, events_file=None):
     """执行有限时长实验，保存数据并分析；返回程序退出码，而非单独的到达判据。"""
     logger = Telemetry(output, config)
-    goals = disturbance = monitor = viewer = None
+    goals = disturbance = monitor = viewer = recorder = None
     sampling, error = {}, None
     start = perf_counter()
     exit_code = 0
     try:
+        # 先载入标准库 XML 扩展，再载入图形/视频原生库，避免混合 Conda
+        # 环境的 Expat 被 EGL 等原生库抢先加载。
+        import xml.parsers.expat
         sim = Simulation(config)
         robot, data = sim.robot, sim.data
         write_json(logger.path/'limits.json', {'lower': robot.lower, 'upper': robot.upper,
@@ -44,9 +62,16 @@ def run(config, output, headless=True, events_file=None):
         state = robot.state(data)
         ref = ReferenceGenerator(state, robot.lower, robot.upper, config['velocity'],
                                  config['acceleration'], config['period'])
+        overlay = None
+        if config['record_video'] or not headless:
+            from .rendering import SceneOverlay
+            overlay = SceneOverlay()
+        if config['record_video']:
+            from .video import VideoRecorder
+            recorder = VideoRecorder(sim, logger.path/'simulation.mp4', config, overlay)
         if not headless:
             from .visualizer import Visualizer
-            viewer = Visualizer(sim)
+            viewer = Visualizer(sim, config, overlay)
         # 默认 20 ms / 2 ms = 10；浮点时间只记录，调度使用整数 tick。
         stride = round(config['period']/config['dt'])
         steps = int(np.floor(config['duration']/config['dt']+1e-9))
@@ -67,16 +92,7 @@ def run(config, output, headless=True, events_file=None):
             # 慢环：先激活最新目标，再 IK、MPC、接续参考；同步 IK 可能超出墙钟预算。
             if tick % stride == 0:
                 tick_start = perf_counter()
-                new = goals.consume(state.t)
-                if new:
-                    # 新目标只更新任务终点；保留实测位置/速度、上一参考边界和求解器状态。
-                    outcome = ik.solve(new.event.position_world, state.q)
-                    new.ik = asdict(outcome)
-                    if outcome.success:
-                        new.q_goal = outcome.q_goal
-                    else:
-                        new.status, new.reason = 'rejected', outcome.reason
-                        monitor.emit(state.t, 'target_rejected', outcome.reason, new.event.goal_id)
+                new = _activate_latest_goal(goals, ik, monitor, state)
                 active = goals.active
                 goal_id = active.event.goal_id if active else -1
                 qgoal = active.q_goal if active else None
@@ -163,13 +179,18 @@ def run(config, output, headless=True, events_file=None):
                 inner_elapsed=inner_elapsed, step_control_elapsed=perf_counter()-inner_start,
                 physics_elapsed=0., qp_status=logger.ticks[-1]['status'],
                 contact_count=data.ncon)
+            if recorder is not None:
+                # 以步前物理状态生成视频帧；不会回写 qpos/qvel 或改变控制更新频率。
+                recorder.capture(state, active.event.position_world if active else None,
+                                 predicted_p, goal_id)
             physics_start = perf_counter()
             # ctrl 和外力都写完后，step2 才让物理状态推进 dt。
             sim.end_step()
             logger.rows[-1]['physics_elapsed'] = np.asarray(perf_counter()-physics_start)
             if abs(data.time-(tick+1)*config['dt']) > 1e-8:
                 monitor.stop(float(data.time), 'mujoco_step_time_reset')
-            if viewer and not viewer.update(state, active.event.position_world if active else None, predicted_p):
+            if viewer and not viewer.update(state, active.event.position_world if active else None,
+                                           predicted_p, goal_id=goal_id):
                 break
         if monitor.stopped:
             exit_code = 1
@@ -184,6 +205,12 @@ def run(config, output, headless=True, events_file=None):
     except Exception:
         error, exit_code = traceback.format_exc(), 1
     finally:
+        if recorder is not None:
+            try:
+                recorder.close()
+            except Exception:
+                error = error or traceback.format_exc()
+                exit_code = 1
         if viewer is not None:
             try:
                 viewer.close()

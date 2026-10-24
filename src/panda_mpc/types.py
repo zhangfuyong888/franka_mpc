@@ -68,6 +68,9 @@ class MPCResult:
     elapsed: float = 0.0
     violation: float = float('nan')
     margin: float = float('nan')
+    # input_rejected：尚未求解；solver_failure：求解器失败；solution_rejected：解未通过复核。
+    failure_kind: str = ''
+    operating_violation: float = float('nan')
 
 
 @dataclass

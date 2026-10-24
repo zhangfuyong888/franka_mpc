@@ -17,21 +17,22 @@ def make_events(config, robot, ik):
     scenario, duration = config['scenario'], config['duration']
     home = robot.fk(robot.home)
     table = [GoalEvent(0, 0., home)]
-    sampling = {'box': config['random_box'], 'rejected': [], 'accepted': 0}
+    prefix = 'rapid_switch' if scenario == 'rapid_switch' else 'random'
+    box, interval = config[prefix+'_box'], config[prefix+'_interval']
+    sampling = {'box': box, 'interval': interval, 'rejected': [], 'accepted': 0}
     a, b, c = np.array([0.48, 0.14, 0.50]), np.array([0.40, -0.18, 0.60]), np.array([0.52, 0.06, 0.42])
     if scenario in ('single_target', 'disturbance'):
         table.append(GoalEvent(1, 0.2, a))
     elif scenario == 'switch':
         table += [GoalEvent(i+1, t, p) for i, (t, p) in enumerate([(0.2, a), (0.7, b), (1.3, c)])]
-    elif scenario == 'rapid_switch':
-        table += [GoalEvent(i+1, float(t), [a, b, c][i % 3])
-                  for i, t in enumerate(np.arange(0.2, duration, 0.3))]
     elif scenario == 'invalid_goal':
         table += [GoalEvent(1, 0.2, a), GoalEvent(2, 1.0, np.array([2., 2., 2.]))]
-    elif scenario == 'random':
+    elif scenario in ('random', 'rapid_switch'):
+        # 位置和切换时间独立抽样；IK 拒采不会改变时间流，同 seed 可复现实验。
+        # rapid_switch 使用更大的空间盒和更短的随机间隔，普通 random 保持原配置。
         position_rng, time_rng = [np.random.default_rng(s) for s in np.random.SeedSequence(config['seed']).spawn(2)]
         t, goal_id = 0.2, 1
-        lo, hi = np.asarray(config['random_box'])
+        lo, hi = np.asarray(box)
         while t < duration:
             for attempt in range(100):
                 p = position_rng.uniform(lo, hi)
@@ -45,7 +46,7 @@ def make_events(config, robot, ik):
             else:
                 raise RuntimeError('No IK-validated random target in 100 attempts')
             goal_id += 1
-            t += float(time_rng.uniform(*config['random_interval']))
+            t += float(time_rng.uniform(*interval))
     return table, sampling
 
 

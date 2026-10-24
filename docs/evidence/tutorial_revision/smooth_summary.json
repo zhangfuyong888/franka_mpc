@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "execution_completed": true,
+  "requested_duration_s": 12.0,
+  "duration_completed": true,
+  "fixed_goal_acceptance": null,
+  "duration_s": 12.000000000000677,
+  "wall_seconds": 4.355858466999052,
+  "simulation_wall_ratio": 2.754910447829132,
+  "final_error_m": 0.0010250890877974352,
+  "max_error_m": 0.28525161249061104,
+  "max_ee_speed_m_s": 0.4625135107364666,
+  "joint_speed_peaks_rad_s": [
+    0.3664676760870546,
+    0.45712387271328475,
+    0.40611577488290207,
+    0.20049030908769863,
+    0.5109983356219556,
+    0.575896745527005,
+    0.2578627172212806
+  ],
+  "joint_torque_peaks_Nm": [
+    3.4700442238268225,
+    22.764618832112266,
+    6.510187480603919,
+    24.491394721602543,
+    1.3909974073199631,
+    3.103236715087836,
+    0.29467869436428423
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 0,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.2,
+  "qp_timing": {
+    "p50_ms": 0.4877299998042872,
+    "p95_ms": 0.7014294505097496,
+    "max_ms": 0.9999670000979677,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.4480505000829,
+    "p95_ms": 3.7690131986892084,
+    "max_ms": 12.380725000184611,
+    "over_budget": 0
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06797599962737877,
+    "p95_ms": 0.08213560040530865,
+    "max_ms": 0.150060999658308,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 1,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.2,
+      "activated_at": 0.20000000000000015,
+      "activation_delay": 1.3877787807814457e-16,
+      "first_command_at": 0.20000000000000015,
+      "final_error_m": 0.08129958515836913,
+      "max_error_m": 0.2020940133108
+    },
+    {
+      "goal_id": 2,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.7,
+      "activated_at": 0.7000000000000005,
+      "activation_delay": 5.551115123125783e-16,
+      "first_command_at": 0.7000000000000005,
+      "final_error_m": 0.11437694212525164,
+      "max_error_m": 0.28525161249061104
+    },
+    {
+      "goal_id": 3,
+      "status": "reached",
+      "reached_at": 2.9219999999999,
+      "scheduled_time": 1.3,
+      "activated_at": 1.300000000000001,
+      "activation_delay": 8.881784197001252e-16,
+      "first_command_at": 1.300000000000001,
+      "final_error_m": 0.0010250890877974352,
+      "max_error_m": 0.24142333200387017
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable",
+  "mpc_input_rejections": 0,
+  "qp_solver_failures": 0,
+  "qp_solution_rejections": 0,
+  "predicted_contact_rejections": 0,
+  "mpc_rejections": 0
+}

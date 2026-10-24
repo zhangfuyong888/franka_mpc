@@ -77,6 +77,25 @@ def test_real_osqp_switch_and_infeasibility():
     assert not mpc.solve(np.full(7, .999), np.full(7, .7), target, previous).success
 
 
+@pytest.mark.parametrize('horizon,smoothness', [(25, .3), (25, 3.), (25, 10.), (15, 3.), (40, 3.)])
+def test_motion_margin_prevents_next_step_numerical_bound_rejection(horizon, smoothness):
+    """回归真实数值问题：不裁剪实测/预测点，连续执行原先会失败的 400 次滚动优化。"""
+    from panda_mpc.mpc import LinearMPC
+    c = load_config(horizon=horizon, delta_a_weight=smoothness)
+    mpc = LinearMPC(np.array([-1.]), np.array([1.]), np.array([.7]), np.array([2.]), c)
+    q, velocity, previous = np.zeros(1), np.zeros(1), np.zeros(1)
+    for k in range(400):
+        result = mpc.solve(q, velocity, np.array([.6 if k < 100 else -.4]), previous)
+        assert result.success, (k, result.status, result.operating_violation)
+        np.testing.assert_allclose(result.q_pred[0], q, atol=1e-5)
+        np.testing.assert_allclose(result.dq_pred[0], velocity, atol=1e-5)
+        assert result.operating_violation <= 1e-10
+        assert np.max(np.abs(result.dq_pred)) <= .7+1e-10
+        assert np.max(np.abs(result.a_pred)) <= 2.+1e-10
+        q, velocity, previous = result.q_pred[1], result.dq_pred[1], result.a_pred[0]
+    assert abs(q[0]+.4) < .01
+
+
 def test_fixed_target_closed_loop_and_headless(tmp_path):
     from panda_mpc.runner import run
     path = tmp_path/'single'
@@ -87,6 +106,9 @@ def test_fixed_target_closed_loop_and_headless(tmp_path):
     assert summary['saturated_steps'] == 0
     assert summary['qp_failures'] == 0
     assert summary['reference_backtracks'] == 0
+    assert summary['duration_completed']
+    assert summary['mpc_rejections'] == summary['mpc_input_rejections'] == summary['qp_solver_failures'] == 0
+    assert (path/'report.md').exists()
     assert summary['max_q_reference_jump'] < 1e-10
     assert summary['max_v_reference_jump'] < 1e-10
     assert 'mujoco.viewer' not in sys.modules
@@ -134,3 +156,30 @@ def test_invalid_goal_rejects_old_goal(tmp_path):
     assert np.all(d['goal_id'][after] == 2)
     assert np.all(d['mode'][after] == 'braking')
     assert np.all(np.isnan(d['q_goal'][after]))
+
+
+def test_random_rapid_switch_closed_loop_and_replay(tmp_path):
+    from panda_mpc.runner import run
+    c = load_config(scenario='rapid_switch', duration=10., seed=42)
+    path, replay = tmp_path/'rapid', tmp_path/'replay'
+    assert run(c, path, True) == 0
+    events = json.loads((path/'events.json').read_text())
+    records = events['targets'][1:]
+    positions = np.array([r['event']['position_world'] for r in records])
+    lo, hi = np.asarray(c['rapid_switch_box'])
+    assert np.all(positions >= lo) and np.all(positions <= hi)
+    assert len(np.unique(positions, axis=0)) == len(records) > 5
+    assert events['sampling']['accepted'] == len(records)
+    for r in records:
+        assert r['activated_at']-r['event']['scheduled_time'] <= c['period']+1e-9
+        assert r['first_command_at'] == r['activated_at']
+    summary = json.loads((path/'summary.json').read_text())
+    assert summary['execution_completed'] and summary['duration_s'] == pytest.approx(10.)
+    assert summary['qp_failures'] == summary['saturated_steps'] == 0
+    assert summary['max_q_reference_jump'] < 1e-10
+    assert summary['max_v_reference_jump'] < 1e-10
+    assert run(c, replay, True, path/'events.json') == 0
+    with np.load(path/'telemetry.npz') as d, np.load(replay/'telemetry.npz') as rd:
+        np.testing.assert_allclose(d['q'], rd['q'], atol=1e-9)
+        np.testing.assert_array_equal(d['goal_id'], rd['goal_id'])
+        assert np.max(np.abs(np.diff(d['q'], axis=0))) < .01

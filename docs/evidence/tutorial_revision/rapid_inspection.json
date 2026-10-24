@@ -1,0 +1,189 @@
+{
+  "requested_time": 0.86,
+  "sample": {
+    "t": 0.8600000000000007,
+    "goal_id": 2,
+    "goal_status": "active",
+    "q": [
+      -0.13285247703561068,
+      -0.41178260146370144,
+      0.18732880984102285,
+      -1.8185614665194967,
+      0.24544806901101385,
+      1.739836302275168,
+      0.9511683391235856
+    ],
+    "dq": [
+      -0.03581969464914102,
+      0.35002741537836113,
+      0.3498299739934939,
+      0.2016220078206445,
+      0.4455481034452416,
+      0.252521193997488,
+      0.27373252765320283
+    ],
+    "q_des": [
+      -0.13298441721253224,
+      -0.4118035067947864,
+      0.18729828496535075,
+      -1.8184582254493589,
+      0.24541998895235015,
+      1.7399601489535896,
+      0.9511162109167872
+    ],
+    "dq_des": [
+      -0.03509982812930558,
+      0.3499578140230694,
+      0.34973687162461986,
+      0.20120585688701742,
+      0.4457891437867991,
+      0.2514453849897439,
+      0.27459077304281937
+    ],
+    "ddq_des": [
+      1.7549914064655807,
+      -2.0000000000002416,
+      -2.000000000000071,
+      -1.9999999999982023,
+      -2.999999999999659,
+      -2.999999999998451,
+      -3.000000000000199
+    ],
+    "a_ideal": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "tau_raw": [
+      -0.1088139842144178,
+      -16.25942912541873,
+      -3.3621379487611533,
+      21.098735179248763,
+      0.8250858054519956,
+      2.3767809522106664,
+      -0.04642938317747314
+    ],
+    "tau_applied": [
+      -0.1088139842144178,
+      -16.25942912541873,
+      -3.3621379487611533,
+      21.098735179248763,
+      0.8250858054519956,
+      2.3767809522106664,
+      -0.04642938317747314
+    ],
+    "bridge_alpha": 1.0,
+    "mode": "braking"
+  },
+  "control_tick": {
+    "t": 0.8600000000000007,
+    "goal_id": 2,
+    "status": "braking:mpc:measured_state_outside_operating_bounds",
+    "alpha": 1.0,
+    "predicted_contact": null
+  },
+  "mpc_quality": {
+    "success": false,
+    "status": "measured_state_outside_operating_bounds",
+    "failure_kind": "input_rejected",
+    "primal_residual": null,
+    "dual_residual": null,
+    "violation": null,
+    "iterations": 0,
+    "elapsed": 1.856400012911763e-05
+  },
+  "nearby_events": [
+    {
+      "t": 0.5600000000000004,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 1,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 0.6000000000000004,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 1,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 0.6400000000000005,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 1,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 0.6800000000000005,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 1,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 0.7400000000000005,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 1,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 0.7800000000000006,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 1,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 0.8600000000000007,
+      "kind": "degraded",
+      "reason": "mpc:measured_state_outside_operating_bounds",
+      "goal_id": 2,
+      "values": {}
+    },
+    {
+      "t": 0.9800000000000008,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 2,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 1.0600000000000007,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 2,
+      "values": {
+        "alpha": 0.5
+      }
+    },
+    {
+      "t": 1.1400000000000008,
+      "kind": "reference_backtrack",
+      "reason": "bounded_backtrack",
+      "goal_id": 3,
+      "values": {
+        "alpha": 0.5
+      }
+    }
+  ]
+}

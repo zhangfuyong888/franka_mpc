@@ -1,0 +1,263 @@
+{
+  "schema_version": 2,
+  "execution_completed": true,
+  "requested_duration_s": 10.0,
+  "duration_completed": true,
+  "fixed_goal_acceptance": null,
+  "duration_s": 10.000000000000009,
+  "wall_seconds": 4.504179870000371,
+  "simulation_wall_ratio": 2.2201600044003538,
+  "final_error_m": 0.23209755035552798,
+  "max_error_m": 0.4739705436993548,
+  "max_ee_speed_m_s": 0.7234148240509933,
+  "joint_speed_peaks_rad_s": [
+    0.6388500527355291,
+    0.6993697421405131,
+    0.6878707907435454,
+    0.6948739448234645,
+    0.8992156100770979,
+    0.8991868876678627,
+    0.5614868829078042
+  ],
+  "joint_torque_peaks_Nm": [
+    6.311866495873986,
+    40.192337841988035,
+    8.883687529473995,
+    26.818488994114915,
+    2.1344587383936204,
+    3.925845851987073,
+    0.6863865040424335
+  ],
+  "saturated_steps": 0,
+  "saturated_joint_samples": 0,
+  "qp_failures": 0,
+  "reference_backtracks": 18,
+  "max_q_reference_jump": 0.0,
+  "max_v_reference_jump": 0.0,
+  "degraded_ticks": 0,
+  "braking_seconds": 0.0,
+  "qp_timing": {
+    "p50_ms": 0.6776940008421661,
+    "p95_ms": 7.29004260028887,
+    "max_ms": 9.654844001488527,
+    "over_budget": 0
+  },
+  "control_tick_timing": {
+    "p50_ms": 3.5685650018422166,
+    "p95_ms": 11.349484801030485,
+    "max_ms": 23.516552999353735,
+    "over_budget": 1
+  },
+  "inner_step_timing": {
+    "p50_ms": 0.06732949987053871,
+    "p95_ms": 0.08168329986801837,
+    "max_ms": 0.22962200091569684,
+    "over_budget": 0
+  },
+  "targets": [
+    {
+      "goal_id": 0,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.0,
+      "activated_at": 0.0,
+      "activation_delay": 0.0,
+      "first_command_at": 0.0,
+      "final_error_m": 7.216450632905188e-16,
+      "max_error_m": 8.082545875167785e-16
+    },
+    {
+      "goal_id": 1,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.2,
+      "activated_at": 0.20000000000000015,
+      "activation_delay": 1.3877787807814457e-16,
+      "first_command_at": 0.20000000000000015,
+      "final_error_m": 0.17037851895238953,
+      "max_error_m": 0.39875049541271507
+    },
+    {
+      "goal_id": 2,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 0.7804944679711054,
+      "activated_at": 0.8000000000000006,
+      "activation_delay": 0.019505532028895156,
+      "first_command_at": 0.8000000000000006,
+      "final_error_m": 0.31926180853955266,
+      "max_error_m": 0.3496296824213092
+    },
+    {
+      "goal_id": 3,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 1.1083638058403178,
+      "activated_at": 1.1200000000000008,
+      "activation_delay": 0.011636194159682978,
+      "first_command_at": 1.1200000000000008,
+      "final_error_m": 0.07106488551458025,
+      "max_error_m": 0.32146376478745653
+    },
+    {
+      "goal_id": 4,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 1.765669811598,
+      "activated_at": 1.7800000000000014,
+      "activation_delay": 0.014330188402001287,
+      "first_command_at": 1.7800000000000014,
+      "final_error_m": 0.19847717883865348,
+      "max_error_m": 0.2822011629194881
+    },
+    {
+      "goal_id": 5,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 2.1300349622924823,
+      "activated_at": 2.139999999999986,
+      "activation_delay": 0.009965037707503566,
+      "first_command_at": 2.139999999999986,
+      "final_error_m": 0.04025138169068896,
+      "max_error_m": 0.3154114913531542
+    },
+    {
+      "goal_id": 6,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 3.014972853244223,
+      "activated_at": 3.019999999999889,
+      "activation_delay": 0.005027146755665957,
+      "first_command_at": 3.019999999999889,
+      "final_error_m": 0.05904901496405583,
+      "max_error_m": 0.1935289727279135
+    },
+    {
+      "goal_id": 7,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 3.5944660314875674,
+      "activated_at": 3.599999999999825,
+      "activation_delay": 0.0055339685122577364,
+      "first_command_at": 3.599999999999825,
+      "final_error_m": 0.07338909310465588,
+      "max_error_m": 0.38363705705795487
+    },
+    {
+      "goal_id": 8,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 4.395499568309001,
+      "activated_at": 4.3999999999997375,
+      "activation_delay": 0.0045004316907366615,
+      "first_command_at": 4.3999999999997375,
+      "final_error_m": 0.25801733035687036,
+      "max_error_m": 0.36847667053933575
+    },
+    {
+      "goal_id": 9,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 4.745323721443572,
+      "activated_at": 4.759999999999698,
+      "activation_delay": 0.01467627855612541,
+      "first_command_at": 4.759999999999698,
+      "final_error_m": 0.1503301654965029,
+      "max_error_m": 0.29511037452453104
+    },
+    {
+      "goal_id": 10,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 5.420554319337198,
+      "activated_at": 5.439999999999623,
+      "activation_delay": 0.019445680662425247,
+      "first_command_at": 5.439999999999623,
+      "final_error_m": 0.24809422589056004,
+      "max_error_m": 0.25976593481308274
+    },
+    {
+      "goal_id": 11,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 5.82732503543114,
+      "activated_at": 5.839999999999579,
+      "activation_delay": 0.012674964568438973,
+      "first_command_at": 5.839999999999579,
+      "final_error_m": 0.031104157208429663,
+      "max_error_m": 0.10030310822815848
+    },
+    {
+      "goal_id": 12,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 6.411528977454612,
+      "activated_at": 6.419999999999515,
+      "activation_delay": 0.00847102254490295,
+      "first_command_at": 6.419999999999515,
+      "final_error_m": 0.131738508333442,
+      "max_error_m": 0.2797189480313294
+    },
+    {
+      "goal_id": 13,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 6.9257899127465326,
+      "activated_at": 6.939999999999458,
+      "activation_delay": 0.014210087252925163,
+      "first_command_at": 6.939999999999458,
+      "final_error_m": 0.11233449689261486,
+      "max_error_m": 0.2783060827864325
+    },
+    {
+      "goal_id": 14,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 7.412121326462783,
+      "activated_at": 7.419999999999405,
+      "activation_delay": 0.00787867353662186,
+      "first_command_at": 7.419999999999405,
+      "final_error_m": 0.12998370889670244,
+      "max_error_m": 0.4739705436993548
+    },
+    {
+      "goal_id": 15,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 8.161102485370622,
+      "activated_at": 8.179999999999401,
+      "activation_delay": 0.018897514628779533,
+      "first_command_at": 8.179999999999401,
+      "final_error_m": 0.18074518027730452,
+      "max_error_m": 0.24993404195472074
+    },
+    {
+      "goal_id": 16,
+      "status": "superseded",
+      "reached_at": null,
+      "scheduled_time": 8.466622395871374,
+      "activated_at": 8.479999999999501,
+      "activation_delay": 0.013377604128127274,
+      "first_command_at": 8.479999999999501,
+      "final_error_m": 0.08223671909503255,
+      "max_error_m": 0.4451377423287807
+    },
+    {
+      "goal_id": 17,
+      "status": "active",
+      "reached_at": null,
+      "scheduled_time": 9.280271474198633,
+      "activated_at": 9.299999999999775,
+      "activation_delay": 0.019728525801141927,
+      "first_command_at": 9.299999999999775,
+      "final_error_m": 0.23209755035552798,
+      "max_error_m": 0.35711050995869476
+    }
+  ],
+  "actual_acceleration_source": "backward difference of measured qvel, first sample unavailable",
+  "mpc_input_rejections": 0,
+  "qp_solver_failures": 0,
+  "qp_solution_rejections": 0,
+  "predicted_contact_rejections": 0,
+  "mpc_rejections": 0
+}
